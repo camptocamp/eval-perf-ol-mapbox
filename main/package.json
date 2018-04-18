@@ -1,0 +1,32 @@
+{
+  "name": "eval-perf-ol-mapbox",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --mode production -p",
+    "dev": "webpack --mode development -d",
+    "start": "webpack-dev-server --mode development -d --open",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/camptocamp/eval-perf-ol-mapbox.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/camptocamp/eval-perf-ol-mapbox/issues"
+  },
+  "homepage": "https://github.com/camptocamp/eval-perf-ol-mapbox#readme",
+  "dependencies": {
+    "mapbox-gl": "^0.44.1",
+    "ol": "^4.6.5"
+  },
+  "devDependencies": {
+    "html-webpack-plugin": "^3.2.0",
+    "webpack": "^4.5.0",
+    "webpack-cli": "^2.0.14",
+    "webpack-dev-server": "^3.1.3"
+  }
+}
