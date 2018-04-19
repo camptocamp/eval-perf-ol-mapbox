@@ -21,7 +21,8 @@
   "homepage": "https://github.com/camptocamp/eval-perf-ol-mapbox#readme",
   "dependencies": {
     "mapbox-gl": "^0.44.1",
-    "ol": "^4.6.5"
+    "ol": "^4.6.5",
+    "ol-mapbox-style": "2.11.2"
   },
   "devDependencies": {
     "html-webpack-plugin": "^3.2.0",

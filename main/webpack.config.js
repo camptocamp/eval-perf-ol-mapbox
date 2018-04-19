@@ -2,14 +2,24 @@ var path = require('path');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: {
+    mapbox :'./src/index.js',
+    ol : './src/ol-map.js'
+  },
   output: {
-    filename: 'main.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'dist')
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'index.html'
+      template: 'index.html',
+      filename: 'mapbox.html',
+      chunks : ['mapbox']
+    }),
+    new HtmlWebpackPlugin({
+      template: 'index.html',
+      filename: 'ol.html',
+      chunks : ['ol']
     })
   ],
   devServer: {
