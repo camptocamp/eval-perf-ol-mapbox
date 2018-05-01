@@ -21,7 +21,7 @@ function outputList(list, filename) {
     JSON.stringify(list),
     (err) => {
       if (err) {
-        console.error('Crap happens');
+        console.error(err);
       }
     },
   );
@@ -72,8 +72,8 @@ function callbackOfAsyncScript(renderTimeList) {
 async function main() {
   driver.executeAsyncScript(scriptStringified)
     .then(callbackOfAsyncScript, message => console.error(message));
-  const map = await driver.findElement(By.id('map'));
-  console.log(`map is: ${map}`);
+  const mapBounds = await driver.executeScript('return window.mapBounds;');
+  console.log('Map bounds:', mapBounds);
   const actions = driver.actions();
   actions
     .move({ origin: Origin.POINTER, x: 500, y: 200 })

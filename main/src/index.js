@@ -7,3 +7,5 @@ const map = new mapboxgl.Map({
   zoom: 8,
 });
 map.showTileBoundaries = true;
+
+window.mapBounds = map.getBounds();
