@@ -1,4 +1,5 @@
 import mapboxgl from 'mapbox-gl';
+import {startPerformanceRecording, stopPerformanceRecording, stopPRAfterATime} from './sharedperformance/performance';
 
 const map = new mapboxgl.Map({
   container: 'map',
@@ -8,4 +9,6 @@ const map = new mapboxgl.Map({
 });
 map.showTileBoundaries = true;
 
-window.mapBounds = map.getBounds();
+window.startPerformanceRecording = startPerformanceRecording;
+window.stopPerformanceRecording = stopPerformanceRecording;
+
