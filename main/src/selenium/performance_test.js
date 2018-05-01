@@ -1,16 +1,17 @@
 const { Builder, By } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
 const { Origin } = require('selenium-webdriver/lib/input');
-let options = new firefox.Options()
+
+const options = new firefox.Options()
   .setPreference('reduceTimerPrecision', false);
 
-let driver = new Builder()
+const driver = new Builder()
   .forBrowser('firefox')
   .setFirefoxOptions(options)
   .build();
 
 const MEASUREMENT_TIME = 500;
-const PATH_TO_OUTPUT_DIR = `../../out/`
+const PATH_TO_OUTPUT_DIR = '../../out/';
 
 driver.get('http://localhost:8000/mapbox.html').then(main, () => console.error('error while loading the page'));
 
@@ -18,11 +19,11 @@ function outputList(list, filename) {
   require('fs').writeFile(
     `${PATH_TO_OUTPUT_DIR}${filename}`,
     JSON.stringify(list),
-    function (err) {
+    (err) => {
       if (err) {
         console.error('Crap happens');
       }
-    }
+    },
   );
 }
 
@@ -42,24 +43,24 @@ function loop(elapsed) {\
 }\
 window.requestAnimationFrame(\
   () => loop(0)\
-);`
-function sum(array){
-  let sum = 0
-  for(let i = 0; i < array.length; i++){
-    sum += array[i]
+);`;
+function sum(array) {
+  let sum = 0;
+  for (let i = 0; i < array.length; i++) {
+    sum += array[i];
   }
-  return sum 
+  return sum;
 }
 
-function average(array){
-  return sum(array)/array.length
+function average(array) {
+  return sum(array) / array.length;
 }
 
-function getInstantFPS(renderTimeList){
-  return renderTimeList.map(x => 1000/x)
+function getInstantFPS(renderTimeList) {
+  return renderTimeList.map(x => 1000 / x);
 }
 
-function callbackOfAsyncScript(renderTimeList){
+function callbackOfAsyncScript(renderTimeList) {
   outputList(renderTimeList, 'renderTimeList.json');
   const instantFPS = getInstantFPS(renderTimeList);
   const avgFPS = average(instantFPS);
@@ -68,15 +69,18 @@ function callbackOfAsyncScript(renderTimeList){
   outputList([avgFPS, totalRenderingTime], 'miscellaneous.json');
 }
 
-async function main()   {
-  driver.executeAsyncScript(scriptStringified).then(callbackOfAsyncScript, (message) => console.error(message));
+async function main() {
+  driver.executeAsyncScript(scriptStringified)
+    .then(callbackOfAsyncScript, message => console.error(message));
   const map = await driver.findElement(By.id('map'));
   console.log(`map is: ${map}`);
   const actions = driver.actions();
   actions
     .move({ origin: Origin.POINTER, x: 500, y: 200 })
     .press()
-    .move({ duration: 200, origin: Origin.POINTER, x: -200, y: 0 })
+    .move({
+      duration: 200, origin: Origin.POINTER, x: -200, y: 0
+    })
     .release()
     .perform();
 }

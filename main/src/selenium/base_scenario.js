@@ -1,10 +1,11 @@
-var webdriver = require('selenium-webdriver');
-var browser = new webdriver.Builder().usingServer().withCapabilities({'browserName': 'firefox' }).build();
- 
- 
+const webdriver = require('selenium-webdriver');
+
+const browser = new webdriver.Builder().usingServer().withCapabilities({ browserName: 'firefox' }).build();
+
+
 function logTitle() {
-  browser.getTitle().then(function(title) {
-      console.log('Current Page Title: ' + title);
+  browser.getTitle().then((title) => {
+    console.log(`Current Page Title: ${  title}`);
   });
 }
 
@@ -18,9 +19,8 @@ function handleFailure(err) {
 }
 
 function findTutsPlusLink() {
-  return browser.findElements(webdriver.By.css('[href="http://code.tutsplus.com/"]')).then(function(result) {
-      return result[0];
-  });
+  return browser.findElements(webdriver.By.css('[href="http://code.tutsplus.com/"]'))
+    .then(result => result[0]);
 }
 
 function findQ() {
@@ -37,6 +37,6 @@ function closeBrowser() {
 }
 
 browser.get('https://www.google.com');
-findQ()
-pressSearch()
-//.then(browser.wait(findTutsPlusLink, 2000)).then(clickLink).then(logTitle).then(closeBrowser, handleFailure);
+findQ();
+pressSearch();
+// .then(browser.wait(findTutsPlusLink, 2000)).then(clickLink).then(logTitle).then(closeBrowser, handleFailure);
