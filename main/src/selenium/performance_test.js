@@ -1,4 +1,4 @@
-const { Builder } = require('selenium-webdriver');
+const { Builder, By } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
 const { Origin } = require('selenium-webdriver/lib/input');
 let options = new firefox.Options()
@@ -9,12 +9,14 @@ let driver = new Builder()
   .setFirefoxOptions(options)
   .build();
 
-const totalLengthDuration = 500;
+const MEASUREMENT_TIME = 500;
+const PATH_TO_OUTPUT_DIR = `../../out/`
+
 driver.get('http://localhost:8000/mapbox.html').then(main, () => console.error('error while loading the page'));
 
-function outputList(list) {
+function outputList(list, filename) {
   require('fs').writeFile(
-    './my.json',
+    `${PATH_TO_OUTPUT_DIR}${filename}`,
     JSON.stringify(list),
     function (err) {
       if (err) {
@@ -24,50 +26,52 @@ function outputList(list) {
   );
 }
 
-const scriptStringified = 'const callback = arguments[arguments.length - 1];\
-let before, old_before, now, fps;\
-before = Date.now();\
-fps = 0;\
-let fps_list = [];\
+const scriptStringified = `const callback = arguments[arguments.length - 1];\
+let before, now, frameTime;\
+before = performance.now();\
+let renderTimeList = [];\
 function loop(elapsed) {\
-  if (elapsed > 500) {\
-    callback(fps_list);\
-    return;\
+  if (elapsed > ${MEASUREMENT_TIME}) {\
+    callback(renderTimeList);\
   }\
-  now = Date.now();\
-  fps = Math.round(1000 / (now - before));\
-  old_before = before;\
+  now = performance.now();\
+  frameTime = now - before;\
   before = now;\
-  fps_list.push(fps);\
-  window.requestAnimationFrame(() => loop(elapsed + now - old_before));\
+  renderTimeList.push(frameTime);\
+  window.requestAnimationFrame(() => loop(elapsed + frameTime));\
 }\
 window.requestAnimationFrame(\
-  () => loop(501)\
-);'
+  () => loop(0)\
+);`
+function sum(array){
+  let sum = 0
+  for(let i = 0; i < array.length; i++){
+    sum += array[i]
+  }
+  return sum 
+}
 
-function main() {
-  driver.executeAsyncScript('const callback = arguments[arguments.length - 1];\
-  let before, old_before, now, fps;\
-  before = Date.now();\
-  fps = 0;\
-  let fps_list = [];\
-  function loop(elapsed) {\
-    if (elapsed > 500) {\
-      callback(fps_list);\
-    }\
-    now = Date.now();\
-    fps = Math.round(1000 / (now - before));\
-    old_before = before;\
-    before = now;\
-    fps_list.push(fps);\
-    window.requestAnimationFrame(() => loop(elapsed + now - old_before));\
-  }\
-  window.requestAnimationFrame(\
-    () => loop(0)\
-  );').then(result => {
-    outputList(result);
-    driver.close()
-  }, (message) => console.error(message))
+function average(array){
+  return sum(array)/array.length
+}
+
+function getInstantFPS(renderTimeList){
+  return renderTimeList.map(x => 1000/x)
+}
+
+function callbackOfAsyncScript(renderTimeList){
+  outputList(renderTimeList, 'renderTimeList.json');
+  const instantFPS = getInstantFPS(renderTimeList);
+  const avgFPS = average(instantFPS);
+  const totalRenderingTime = sum(renderTimeList);
+  outputList(instantFPS, 'instantFPS.json');
+  outputList([avgFPS, totalRenderingTime], 'miscellaneous.json');
+}
+
+async function main()   {
+  driver.executeAsyncScript(scriptStringified).then(callbackOfAsyncScript, (message) => console.error(message));
+  const map = await driver.findElement(By.id('map'));
+  console.log(`map is: ${map}`);
   const actions = driver.actions();
   actions
     .move({ origin: Origin.POINTER, x: 500, y: 200 })

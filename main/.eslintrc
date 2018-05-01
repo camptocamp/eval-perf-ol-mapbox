@@ -1,1 +1,10 @@
-"extends" : "airbnb"
+{
+    "extends": "airbnb",
+    "env": {
+        "browser": true
+    },
+    "rules": {
+        "no-param-reassign": "off",
+        "no-underscore-dangle": "off"
+    }
+}
