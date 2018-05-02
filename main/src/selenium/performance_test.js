@@ -28,13 +28,13 @@ function outputJSON(object, filename) {
 }
 
 async function main() {
-  driver.executeScript('window.startPerformanceRecording()');
+  driver.executeScript('window.startPerformanceRecording(document.getElementById("map"))');
   const actions = driver.actions();
   await actions
     .move({ origin: Origin.POINTER, x: 500, y: 200 })
     .press()
     .move({
-      duration: 200, origin: Origin.POINTER, x: -200, y: 0
+      duration: 200, origin: Origin.POINTER, x: -200, y: 0,
     })
     .pause(500)
     .release()

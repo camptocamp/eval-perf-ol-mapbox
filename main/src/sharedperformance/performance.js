@@ -1,14 +1,17 @@
+import { startEventRecording, stopEventRecording } from './event_recorder';
+
 export default class PerformanceRecording {
   constructor() {
     this.perfLogs = {};
     this.recording = false;
   }
 
-  startPerformanceRecording() {
+  startPerformanceRecording(mapDOM) {
     if (!this.recording) {
       this.perfLogs = {};
       this.recording = true;
       this.startFPSCount();
+      startEventRecording(mapDOM);
     } else {
       console.error('console already launched');
     }
@@ -17,6 +20,7 @@ export default class PerformanceRecording {
   stopPerformanceRecording() {
     if (this.recording) {
       this.recording = false;
+      this.perfLogs.eventLogs = stopEventRecording();
       return this.perfLogs;
     }
     console.error('no recording launched');
