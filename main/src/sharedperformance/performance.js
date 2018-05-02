@@ -32,8 +32,9 @@ function startFPSCount(perfLogsObject) {
     now = performance.now();
     frameTime = now - before;
     before = now;
-    perfLogsObject.timeBetweenFrames.push(frameTime);
-    perfLogsObject.instantFPS.push(1000/frameTime);
+    //performance.now() has 20 microseconds precision
+    perfLogsObject.timeBetweenFrames.push(frameTime.toFixed(2));
+    perfLogsObject.instantFPS.push((1000/frameTime).toFixed(4));
     window.requestAnimationFrame(() => loop());
   }
   window.requestAnimationFrame(loop);

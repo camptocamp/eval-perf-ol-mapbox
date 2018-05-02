@@ -3,7 +3,7 @@ const firefox = require('selenium-webdriver/firefox');
 const { Origin } = require('selenium-webdriver/lib/input');
 
 const options = new firefox.Options()
-  .setPreference('reduceTimerPrecision', false).setPreference('privacy.resistFingerPrinting', false);
+  .setPreference('privacy.reduceTimerPrecision', false).setPreference('privacy.resistFingerprinting', false);
 
 const driver = new Builder()
   .forBrowser('firefox')
@@ -40,5 +40,5 @@ async function main() {
     .perform();
   const logs = await driver.executeScript('return window.stopPerformanceRecording()');
   outputJSON(logs, 'perfLogs.json');
-  driver.close()
+  //driver.close()
 }
