@@ -6,6 +6,7 @@ export default class PerformanceRecording {
     this.recording = false;
   }
 
+<<<<<<< HEAD
   startPerformanceRecording(mapDOM) {
     if (!this.recording) {
       this.perfLogs = {};
@@ -15,6 +16,28 @@ export default class PerformanceRecording {
     } else {
       console.error('console already launched');
     }
+=======
+function startFPSCount(perfLogsObject) {
+  let before;
+  let now;
+  let timeBetweenFrame;
+  before = performance.now();
+  perfLogsObject.timeBetweenFrames = [];
+  perfLogsObject.frameTimes = [];
+  perfLogsObject.instantFPS = [];
+  function loop() {
+    if (!recording) {
+      return;
+    }
+    now = performance.now();
+    timeBetweenFrame = now - before;
+    before = now;
+    // performance.now() has 20 microseconds precision
+    perfLogsObject.timeBetweenFrames.push(timeBetweenFrame.toFixed(2));
+    perfLogsObject.frameTimes.push(now.toFixed(2));
+    perfLogsObject.instantFPS.push((1000 / timeBetweenFrame).toFixed(4));
+    window.requestAnimationFrame(() => loop());
+>>>>>>> 5809a6c... adding timestamps of frames in perfLogs to synchronize with eventRecorder
   }
 
   stopPerformanceRecording() {
@@ -40,6 +63,7 @@ export default class PerformanceRecording {
     this.before = performance.now();
     this.perfLogs.timeBetweenFrames = [];
     this.perfLogs.instantFPS = [];
+    this.perfLogs.frameTimes = [];
     window.requestAnimationFrame(() => this.loop());
   }
   loop() {
@@ -51,6 +75,7 @@ export default class PerformanceRecording {
     this.before = this.now;
     // performance.now() has 20 microseconds precision
     this.perfLogs.timeBetweenFrames.push(this.frameTime.toFixed(2));
+    this.perfLogs.frameTimes.push(now.toFixed(2));
     this.perfLogs.instantFPS.push((1000 / this.frameTime).toFixed(4));
     window.requestAnimationFrame(() => this.loop());
   }
