@@ -11,9 +11,78 @@ const driver = new Builder()
   .build();
 
 const MEASUREMENT_TIME = 500;
-const PATH_TO_OUTPUT_DIR = '../../out/openlayers/';
+const PATH_TO_OUTPUT_DIR = '../../out/mapbox/';
 
-driver.get('http://localhost:8000/ol.html').then(main, () => console.error('error while loading the page'));
+driver.get('http://localhost:8000/mapbox.html').then(main, () => console.error('error while loading the page'));
+
+async function drag(actions, x, y, duration) {
+  return actions.press()
+    .move({
+      duration, origin: Origin.POINTER, x, y,
+    })
+    .release();
+}
+
+async function initialMovement(actions) {
+  return actions.move({ origin: Origin.POINTER, x: 500, y: 200 });
+}
+
+async function path5sec(driverForActions) {
+  const actions = driverForActions.actions();
+  const standardPause = 100;
+  const standardMoveDuration = 200;
+  const longerPause = 500;
+  const longerMoveDuration = 500;
+  return actions
+    .move({ origin: Origin.POINTER, x: 600, y: 300 })
+    .pause(100)
+    .press()
+    .move({
+      duration: standardMoveDuration, origin: Origin.POINTER, x: -200, y: 0,
+    })
+    .release()
+    .pause(standardPause)
+    .doubleClick()
+    .pause(longerPause)
+    .move({
+      duration: standardMoveDuration, origin: Origin.POINTER, x: 0, y: -200,
+    })
+    .pause(standardPause)
+    .move({
+      duration: standardMoveDuration, origin: Origin.POINTER, x: 200, y: 0,
+    })
+    .pause(standardPause)
+    .move({
+      duration: standardMoveDuration, origin: Origin.POINTER, x: 0, y: 200,
+    })
+    .release()
+    .pause(longerPause)
+    .doubleClick()
+    .pause(standardPause)
+    .press()
+    .move({
+      duration: standardMoveDuration, origin: Origin.POINTER, x: -200, y: 200,
+    })
+    .release()
+    .move({
+      duration: standardMoveDuration, origin: Origin.POINTER, x: 200, y: -200,
+    })
+    .press()
+    .move({
+      duration: standardMoveDuration, origin: Origin.POINTER, x: -200, y: 200,
+    })
+    .release()
+    .doubleClick()
+    .pause(longerPause)
+    .press()
+    .move({
+      duration: longerMoveDuration, origin: Origin.POINTER, x: 400, y: -50,
+    })
+    .move({
+      duration: standardMoveDuration, origin: Origin.POINTer, x: 0, y: 200,
+    })
+    .pause(longerPause);
+}
 
 function outputJSON(object, filename) {
   require('fs').writeFile(
@@ -29,6 +98,7 @@ function outputJSON(object, filename) {
 
 async function main() {
   driver.executeScript('window.startPerformanceRecording(document.getElementById("map"))');
+<<<<<<< HEAD
   const actions = driver.actions();
   await actions
     .move({ origin: Origin.POINTER, x: 500, y: 200 })
@@ -39,7 +109,11 @@ async function main() {
     .pause(500)
     .release()
     .perform();
+=======
+  const actions = await path5sec(driver);
+  await actions.perform();
+>>>>>>> 6a18d48... adding a longer scenario, WARNING, it is verbose
   const logs = await driver.executeScript('return window.stopPerformanceRecording()');
-  outputJSON(logs, 'perfLogs.json');
+  outputJSON(logs, 'scenario1.json');
   driver.close();
 }
