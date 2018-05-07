@@ -32,7 +32,9 @@ function startFPSCount(perfLogsObject) {
     now = performance.now();
     timeBetweenFrame = now - before;
     before = now;
-    // performance.now() has 20 microseconds precision
+    /* performance.now() is in milliseconds and has 20 microseconds precision
+    * (when privacy.reduceTimerPrecision is false) in firefox
+    */
     perfLogsObject.timeBetweenFrames.push(timeBetweenFrame.toFixed(2));
     perfLogsObject.frameTimes.push(now.toFixed(2));
     perfLogsObject.instantFPS.push((1000 / timeBetweenFrame).toFixed(4));
