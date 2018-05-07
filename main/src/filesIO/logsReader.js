@@ -38,12 +38,12 @@ function getStartAndEndOfDragEvents() {
   const dragEvents = getDragEvents();
   const filteredDragEvents = dragEvents.filter(dragEvent => (dragEvent.timeStampsOfMoves.length >= 2));
   const finalArray = filteredDragEvents.map((dragEvent) => {
-      const object = createDragEventObject(
-        parseFloat(dragEvent.timeStampsOfMoves[0]),
-        parseFloat(dragEvent.timeStampsOfMoves[dragEvent.timeStampsOfMoves.length - 1]),
-      );
-      return object;
-    });
+    const object = createDragEventObject(
+      parseFloat(dragEvent.timeStampsOfMoves[0]),
+      parseFloat(dragEvent.timeStampsOfMoves[dragEvent.timeStampsOfMoves.length - 1]),
+    );
+    return object;
+  });
   return finalArray;
 }
 
