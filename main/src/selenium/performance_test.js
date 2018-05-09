@@ -11,9 +11,10 @@ const driver = new Builder()
   .build();
 
 const MEASUREMENT_TIME = 500;
-const PATH_TO_OUTPUT_DIR = '../../out/mapbox/';
+const RENDERER_USED = 'openlayers';
+const PATH_TO_OUTPUT_DIR = `../../out/${RENDERER_USED}/`;
 
-driver.get('http://localhost:8000/mapbox.html').then(main, () => console.error('error while loading the page'));
+driver.get(`http://localhost:8000/${RENDERER_USED}.html`).then(main, () => console.error('error while loading the page'));
 
 async function drag(actions, x, y, duration) {
   return actions.press()

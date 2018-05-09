@@ -18,8 +18,8 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: 'index.html',
-      filename: 'ol.html',
-      chunks: ['ol'],
+      filename: 'openlayers.html',
+      chunks: ['openlayers'],
     }),
   ],
   devServer: {

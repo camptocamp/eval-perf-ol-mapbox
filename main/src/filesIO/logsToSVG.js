@@ -3,10 +3,9 @@ const plotPerf = require('../visualization/plotPerf');
 
 const PREFIX_TO_OUTDIR = '../../out/';
 const PATH_TO_SVG_DIR = `${PREFIX_TO_OUTDIR}svg/`;
-const PATH_TO_MAPBOX_LOGS = `${PREFIX_TO_OUTDIR}mapbox/`;
-const PATH_TO_OPENLAYERS_LOGS = `${PREFIX_TO_OUTDIR}openlayers/`;
+const LIBRARIES = ['openlayers', 'mapbox'];
 
-function filenameWithoutExtension(filename){
+function filenameWithoutExtension(filename) {
   return filename.split('.')[0];
 }
 
@@ -18,17 +17,12 @@ function exportSVGFromDir(path, prefix) {
   });
 }
 
-function exportOpenLayersLogs() {
-  exportSVGFromDir(PATH_TO_OPENLAYERS_LOGS, 'openlayers');
-}
-
-function exportMapboxLogs() {
-  exportSVGFromDir(PATH_TO_MAPBOX_LOGS, 'mapbox');
+function exportLogs(lib) {
+  exportSVGFromDir(`${PREFIX_TO_OUTDIR}${lib}/`, lib);
 }
 
 function exportAllSVG() {
-  exportMapboxLogs();
-  exportOpenLayersLogs();
+  LIBRARIES.forEach(lib => exportLogs(lib));
 }
 
 module.exports.exportAllSVG = exportAllSVG;
