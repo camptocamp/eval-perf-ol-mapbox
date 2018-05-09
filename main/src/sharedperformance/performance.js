@@ -1,43 +1,45 @@
-let recording = false;
+export default class PerformanceRecording {
+  constructor() {
+    this.perfLogs = {};
+    this.recording = false;
+  }
 
-function startPerformanceRecording() {
-  window.perfLogs = {};
-  recording = true;
-  startFPSCount(perfLogs);
-}
+  startPerformanceRecording() {
+    this.perfLogs = {};
+    this.recording = true;
+    this.startFPSCount();
+  }
 
-function stopPerformanceRecording() {
-  recording = false;
-  return window.perfLogs;
-}
+  stopPerformanceRecording() {
+    this.recording = false;
+    return this.perfLogs;
+  }
 
-async function stopPRAfterATime(time) {
-  const promise = new Promise(resolve => {
-    setTimeout(() => {
-      resolve('resolved');
-    }, time);
-  });
-  promise.then(() => console.log(stopPerformanceRecording()));
-}
+  async stopPRAfterATime(time) {
+    const promise = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve('resolved');
+      }, time);
+    });
+    promise.then(() => console.log(this.stopPerformanceRecording()));
+  }
 
-function startFPSCount(perfLogsObject) {
-  let before, now, frameTime;
-  before = performance.now();
-  perfLogsObject.timeBetweenFrames = [];
-  perfLogsObject.instantFPS = [];
-  function loop() {
-    if (!recording ) {
+  startFPSCount() {
+    this.before = performance.now();
+    this.perfLogs.timeBetweenFrames = [];
+    this.perfLogs.instantFPS = [];
+    window.requestAnimationFrame(() => this.loop());
+  }
+  loop() {
+    if (!this.recording) {
       return;
     }
-    now = performance.now();
-    frameTime = now - before;
-    before = now;
-    //performance.now() has 20 microseconds precision
-    perfLogsObject.timeBetweenFrames.push(frameTime.toFixed(2));
-    perfLogsObject.instantFPS.push((1000/frameTime).toFixed(4));
-    window.requestAnimationFrame(() => loop());
+    this.now = performance.now();
+    this.frameTime = this.now - this.before;
+    this.before = this.now;
+    // performance.now() has 20 microseconds precision
+    this.perfLogs.timeBetweenFrames.push(this.frameTime.toFixed(2));
+    this.perfLogs.instantFPS.push((1000 / this.frameTime).toFixed(4));
+    window.requestAnimationFrame(() => this.loop());
   }
-  window.requestAnimationFrame(loop);
 }
-
-export {startPerformanceRecording, stopPerformanceRecording, stopPRAfterATime};

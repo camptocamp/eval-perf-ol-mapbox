@@ -36,9 +36,10 @@ async function main() {
     .move({
       duration: 200, origin: Origin.POINTER, x: -200, y: 0
     })
+    .pause(500)
     .release()
     .perform();
   const logs = await driver.executeScript('return window.stopPerformanceRecording()');
   outputJSON(logs, 'perfLogs.json');
-  //driver.close()
+  driver.close();
 }
