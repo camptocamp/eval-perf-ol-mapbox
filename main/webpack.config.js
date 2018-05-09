@@ -3,8 +3,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
-    mapbox: './src/index.js',
-    ol: './src/ol-map.js',
+    mapbox: './src/openlayers.js',
+    openlayers: './src/openlayers.js',
   },
   output: {
     filename: '[name].js',
