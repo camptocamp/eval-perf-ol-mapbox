@@ -98,21 +98,8 @@ function outputJSON(object, filename) {
 
 async function main() {
   driver.executeScript('window.startPerformanceRecording(document.getElementById("map"))');
-<<<<<<< HEAD
-  const actions = driver.actions();
-  await actions
-    .move({ origin: Origin.POINTER, x: 500, y: 200 })
-    .press()
-    .move({
-      duration: 200, origin: Origin.POINTER, x: -200, y: 0,
-    })
-    .pause(500)
-    .release()
-    .perform();
-=======
   const actions = await path5sec(driver);
   await actions.perform();
->>>>>>> 6a18d48... adding a longer scenario, WARNING, it is verbose
   const logs = await driver.executeScript('return window.stopPerformanceRecording()');
   outputJSON(logs, 'scenario1.json');
   driver.close();
