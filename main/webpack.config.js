@@ -3,8 +3,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
-    mapbox: './src/index.js',
-    ol: './src/ol-map.js',
+    mapbox: './src/openlayers.js',
+    openlayers: './src/openlayers.js',
   },
   output: {
     filename: '[name].js',
@@ -18,8 +18,8 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: 'index.html',
-      filename: 'ol.html',
-      chunks: ['ol'],
+      filename: 'openlayers.html',
+      chunks: ['openlayers'],
     }),
   ],
   devServer: {

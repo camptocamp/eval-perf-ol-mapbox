@@ -8,7 +8,7 @@ const map = new mapboxgl.Map({
   zoom: 8,
 });
 map.showTileBoundaries = true;
-
+const mapDOM = document.getElementById('map');
 const performanceRecording = new PerformanceRecording();
-window.startPerformanceRecording = () => performanceRecording.startPerformanceRecording();
+window.startPerformanceRecording = () => performanceRecording.startPerformanceRecording(mapDOM);
 window.stopPerformanceRecording = () => performanceRecording.stopPerformanceRecording();

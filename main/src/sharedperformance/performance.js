@@ -1,14 +1,17 @@
+import { startEventRecording, stopEventRecording } from './event_recorder';
+
 export default class PerformanceRecording {
   constructor() {
     this.perfLogs = {};
     this.recording = false;
   }
 
-  startPerformanceRecording() {
+  startPerformanceRecording(mapDOM) {
     if (!this.recording) {
       this.perfLogs = {};
       this.recording = true;
       this.startFPSCount();
+      startEventRecording(mapDOM);
     } else {
       console.error('console already launched');
     }
@@ -17,6 +20,7 @@ export default class PerformanceRecording {
   stopPerformanceRecording() {
     if (this.recording) {
       this.recording = false;
+      this.perfLogs.eventLogs = stopEventRecording();
       return this.perfLogs;
     }
     console.error('no recording launched');
@@ -36,6 +40,7 @@ export default class PerformanceRecording {
     this.before = performance.now();
     this.perfLogs.timeBetweenFrames = [];
     this.perfLogs.instantFPS = [];
+    this.perfLogs.frameTimes = [];
     window.requestAnimationFrame(() => this.loop());
   }
   loop() {
@@ -47,6 +52,7 @@ export default class PerformanceRecording {
     this.before = this.now;
     // performance.now() has 20 microseconds precision
     this.perfLogs.timeBetweenFrames.push(this.frameTime.toFixed(2));
+    this.perfLogs.frameTimes.push(this.now.toFixed(2));
     this.perfLogs.instantFPS.push((1000 / this.frameTime).toFixed(4));
     window.requestAnimationFrame(() => this.loop());
   }
