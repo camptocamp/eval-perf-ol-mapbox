@@ -2,8 +2,7 @@ import CanvasMap from 'ol/canvasmap';
 import View from 'ol/view';
 import proj from 'ol/proj';
 import { apply } from 'ol-mapbox-style';
-import { startPerformanceRecording, stopPerformanceRecording, stopPRAfterATime } from './sharedperformance/performance';
-
+import init from './shared-init';
 
 class InstrumentedCanvasMap extends CanvasMap {
   renderFrame_(time) {
@@ -26,5 +25,4 @@ map.setView(new View({
   zoom: 8,
 }));
 
-window.startPerformanceRecording = startPerformanceRecording;
-window.stopPerformanceRecording = stopPerformanceRecording;
+init();
