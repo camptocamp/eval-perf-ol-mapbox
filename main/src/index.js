@@ -12,5 +12,3 @@ map.showTileBoundaries = true;
 const performanceRecording = new PerformanceRecording();
 window.startPerformanceRecording = () => performanceRecording.startPerformanceRecording();
 window.stopPerformanceRecording = () => performanceRecording.stopPerformanceRecording();
-window.startPerformanceRecording();
-

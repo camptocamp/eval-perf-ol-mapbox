@@ -5,14 +5,22 @@ export default class PerformanceRecording {
   }
 
   startPerformanceRecording() {
-    this.perfLogs = {};
-    this.recording = true;
-    this.startFPSCount();
+    if (!this.recording) {
+      this.perfLogs = {};
+      this.recording = true;
+      this.startFPSCount();
+    } else {
+      console.error('console already launched');
+    }
   }
 
   stopPerformanceRecording() {
-    this.recording = false;
-    return this.perfLogs;
+    if (this.recording) {
+      this.recording = false;
+      return this.perfLogs;
+    }
+    console.error('no recording launched');
+    return null;
   }
 
   async stopPRAfterATime(time) {
