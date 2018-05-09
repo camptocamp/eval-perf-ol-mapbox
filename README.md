@@ -1,4 +1,4 @@
-# Testing performance of mapbox-gl and openlayers
+# Testing performance of mapbox-gl and openlayehttps://github.com/camptocamp/eval-perf-ol-mapboxrs
 
 ## Literature review
 Reviewing the literature confirmed that Quality of Experience (QoE) is a complicated problem.
@@ -20,3 +20,5 @@ To summarize:
 - 1. FPS/render time
 - 2. variance in 1.
 - 3. Other ?
+
+Warning : tileserver use node v6 and selenium-webdriver use node v8
