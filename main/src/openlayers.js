@@ -6,11 +6,10 @@ import init from './shared-init';
 
 class InstrumentedCanvasMap extends CanvasMap {
   renderFrame_(time) {
-    const beforeRender = performance.now();
+    this.beforeRender = performance.now();
     super.renderFrame_(time);
-    const afterRender = performance.now();
-    const renderTime = afterRender - beforeRender;
-    console.log('rendered in', renderTime);
+    this.afterRender = performance.now();
+    this.hasChanged = true;
   }
 }
 
@@ -25,4 +24,4 @@ map.setView(new View({
   zoom: 8,
 }));
 
-init();
+init(map);

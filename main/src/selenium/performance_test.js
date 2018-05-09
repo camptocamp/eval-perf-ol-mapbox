@@ -10,23 +10,10 @@ const driver = new Builder()
   .setFirefoxOptions(options)
   .build();
 
-const MEASUREMENT_TIME = 500;
 const RENDERER_USED = 'openlayers';
 const PATH_TO_OUTPUT_DIR = `../../out/${RENDERER_USED}/`;
 
 driver.get(`http://localhost:8000/${RENDERER_USED}.html`).then(main, () => console.error('error while loading the page'));
-
-async function drag(actions, x, y, duration) {
-  return actions.press()
-    .move({
-      duration, origin: Origin.POINTER, x, y,
-    })
-    .release();
-}
-
-async function initialMovement(actions) {
-  return actions.move({ origin: Origin.POINTER, x: 500, y: 200 });
-}
 
 async function path5sec(driverForActions) {
   const actions = driverForActions.actions();

@@ -1,10 +1,9 @@
 import PerformanceRecording from './sharedperformance/performance';
 
-function init() {
+export default function init(map) {
   const mapDOM = document.getElementById('map');
-  const performanceRecording = new PerformanceRecording();
-  window.startPerformanceRecording = () => performanceRecording.startPerformanceRecording(mapDOM);
-  window.stopPerformanceRecording = () => performanceRecording.stopPerformanceRecording()
+  const performanceRecording = new PerformanceRecording(map, mapDOM);
+  window.startPerformanceRecording = () => performanceRecording.startPerformanceRecording();
+  window.stopPerformanceRecording = () => performanceRecording.stopPerformanceRecording();
 }
 
-export default { init };

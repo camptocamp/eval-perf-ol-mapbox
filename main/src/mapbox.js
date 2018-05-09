@@ -9,4 +9,4 @@ const map = new mapboxgl.Map({
 });
 map.showTileBoundaries = true;
 
-init();
+init(map);
