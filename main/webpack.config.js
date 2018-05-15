@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
-    mapbox: './src/openlayers.js',
+    mapbox: './src/mapbox.js',
     openlayers: './src/openlayers.js',
   },
   output: {
