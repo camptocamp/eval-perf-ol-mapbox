@@ -30,6 +30,11 @@ function getDragEvents() {
   return logsObject.eventLogs.dragEvents;
 }
 
+function getDoubleClickTimes() {
+  checkIfUndefined();
+  return convertStringArrayToFloatList(logsObject.eventLogs.doubleClickTimes);
+}
+
 function createDragEventObject(start, end) {
   return { start, end };
 }
@@ -57,3 +62,4 @@ module.exports.getFrameTimes = getFrameTimes;
 module.exports.getInstantFPS = getInstantFPS;
 module.exports.getTimeBetweenFrames = getTimeBetweenFrames;
 module.exports.getStartAndEndOfDragEvents = getStartAndEndOfDragEvents;
+module.exports.getDoubleClickTimes = getDoubleClickTimes;

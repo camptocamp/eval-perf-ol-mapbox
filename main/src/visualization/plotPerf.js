@@ -14,15 +14,18 @@ const styles = `
   fill: orange
 }
 .drag text {
-  fill: #fff;
+  fill: #000;
   font: 10px sans-serif;
+}
+.zoom circle {
+  fill: red
 }
 .zoom rect {
   fill: red
 }
 .zoom text {
-  fill: #fff;
-  font: 10px sans-serif;
+  fill: #000;
+  font: 8px sans-serif;
 }`;
 
 const options = {
@@ -39,7 +42,10 @@ function SVGFromLogs(path) {
   const instantFPS = logsReader.getInstantFPS();
   const timeBetweenFrames = logsReader.getTimeBetweenFrames();
   const dragEvents = logsReader.getStartAndEndOfDragEvents();
+  const doubleClickTimes = logsReader.getDoubleClickTimes();
+  console.log(doubleClickTimes);
   const DRAG_EVENTS_HEIGHT = 30;
+  const DOUBLE_CLICKS_HEIGHT = 5;
 
   const margin = {
     top: 10, right: 30, bottom: 30, left: 30,
@@ -50,7 +56,9 @@ function SVGFromLogs(path) {
   const width = 960 - labelMargin.left - margin.left - margin.right;
   const height = 500 - labelMargin.bottom - margin.top - margin.bottom;
 
-  const maxFps = d3.max(instantFPS);
+  //TODO fix bug when first frame is really too fast
+  let maxFps = d3.max(instantFPS);
+  maxFps = 150;
   const xOtherScale = d3.scaleLinear()
     .domain([0, frameTimes[frameTimes.length - 1] - frameTimes[0]])
     .range([0, width]);
@@ -60,7 +68,7 @@ function SVGFromLogs(path) {
     .range([0, width]);
 
   const y = d3.scaleLinear()
-    .domain([0, d3.max(instantFPS)])
+    .domain([0, maxFps])
     .range([height, 0]);
 
 
@@ -130,6 +138,20 @@ function SVGFromLogs(path) {
     .attr('text-anchor', 'middle')
     .text((d, i) => `DragEvent${i}`);
 
+  const dblClickEventsSVG = graph.selectAll('.zoom')
+    .data(doubleClickTimes)
+    .enter().append('g')
+    .attr('class', 'zoom')
+    .attr('transform', d => `translate(${x(d)},${height - DOUBLE_CLICKS_HEIGHT})`);
+
+  dblClickEventsSVG.append('circle')
+    .attr('r', 5);
+  /*dblClickEventsSVG.append('text')
+    .attr('y', 1)
+    .attr('dy', '.75em')
+    .attr('text-anchor', 'middle')
+    .text((d, i) => `zoom${i}`);*/
+
   graph.append('g')
     .attr('class', 'axis axis--x')
     .attr('transform', `translate(0,${height})`)
@@ -140,5 +162,4 @@ function SVGFromLogs(path) {
     .call(d3.axisLeft(y));
   return d3n.svgString();
 }
-
 module.exports.SVGFromLogs = SVGFromLogs;
