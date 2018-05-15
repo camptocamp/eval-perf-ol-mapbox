@@ -1,4 +1,4 @@
-# Testing performance of mapbox-gl and openlayehttps://github.com/camptocamp/eval-perf-ol-mapboxrs
+# Testing performance of mapbox-gl and openlayers
 
 ## Literature review
 Reviewing the literature confirmed that Quality of Experience (QoE) is a complicated problem.
