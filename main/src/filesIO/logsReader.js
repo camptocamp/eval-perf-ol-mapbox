@@ -11,6 +11,14 @@ function checkIfUndefined() {
   }
 }
 
+function convertObjectWithStringToObjectWithFloat(object) {
+  const newObj = {};
+  Object.keys(object).forEach((key) => {
+    newObj[key] = parseFloat(object[key]);
+  });
+  return newObj;
+}
+
 function convertStringArrayToFloatList(strArray) {
   return strArray.map(string => parseFloat(string));
 }
@@ -39,6 +47,14 @@ function createDragEventObject(start, end) {
   return { start, end };
 }
 
+function getRenderTimes() {
+  checkIfUndefined();
+  if (logsObject.renderTimes === undefined) {
+    return [];
+  }
+  return logsObject.renderTimes.map(object => convertObjectWithStringToObjectWithFloat(object));
+}
+
 function getStartAndEndOfDragEvents() {
   const dragEvents = getDragEvents();
   const filteredDragEvents = dragEvents.filter(dragEvent => (dragEvent.timeStampsOfMoves.length >= 2));
@@ -63,3 +79,4 @@ module.exports.getInstantFPS = getInstantFPS;
 module.exports.getTimeBetweenFrames = getTimeBetweenFrames;
 module.exports.getStartAndEndOfDragEvents = getStartAndEndOfDragEvents;
 module.exports.getDoubleClickTimes = getDoubleClickTimes;
+module.exports.getRenderTimes = getRenderTimes;

@@ -20,12 +20,12 @@ const styles = `
 .zoom circle {
   fill: red
 }
-.zoom rect {
-  fill: red
-}
 .zoom text {
   fill: #000;
   font: 8px sans-serif;
+}
+.render rect {
+  fill: violet
 }`;
 
 const options = {
@@ -43,9 +43,10 @@ function SVGFromLogs(path) {
   const timeBetweenFrames = logsReader.getTimeBetweenFrames();
   const dragEvents = logsReader.getStartAndEndOfDragEvents();
   const doubleClickTimes = logsReader.getDoubleClickTimes();
-  console.log(doubleClickTimes);
+  const renderTimes = logsReader.getRenderTimes();
   const DRAG_EVENTS_HEIGHT = 30;
   const DOUBLE_CLICKS_HEIGHT = 5;
+  const RENDER_RECT_HEIGHT = 20;
 
   const margin = {
     top: 10, right: 30, bottom: 30, left: 30,
@@ -151,6 +152,16 @@ function SVGFromLogs(path) {
     .attr('dy', '.75em')
     .attr('text-anchor', 'middle')
     .text((d, i) => `zoom${i}`);*/
+
+  const renderSVG = graph.selectAll('.render')
+    .data(renderTimes)
+    .enter().append('g')
+    .attr('class', 'render')
+    .attr('transform', data => `translate(${x(data.beforeRender)},${height - RENDER_RECT_HEIGHT})`);
+
+  renderSVG.append('rect')
+    .attr('width', d => x(d.afterRender) - x(d.beforeRender))
+    .attr('height', RENDER_RECT_HEIGHT);
 
   graph.append('g')
     .attr('class', 'axis axis--x')

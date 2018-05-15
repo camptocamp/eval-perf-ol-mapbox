@@ -10,7 +10,7 @@ const driver = new Builder()
   .setFirefoxOptions(options)
   .build();
 
-const RENDERER_USED = 'openlayers';
+const RENDERER_USED = 'mapbox';
 const PATH_TO_OUTPUT_DIR = `../../out/${RENDERER_USED}/`;
 
 driver.get(`http://localhost:8000/${RENDERER_USED}.html`).then(main, () => console.error('error while loading the page'));
