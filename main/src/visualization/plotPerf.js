@@ -13,7 +13,14 @@ const styles = `
 .drag rect {
   fill: orange
 }
-.bar text {
+.drag text {
+  fill: #fff;
+  font: 10px sans-serif;
+}
+.zoom rect {
+  fill: red
+}
+.zoom text {
   fill: #fff;
   font: 10px sans-serif;
 }`;
@@ -27,7 +34,7 @@ function SVGFromLogs(path) {
 
   const d3n = new D3Node(options);
 
-  logsReader.initLogs('../../out/mapbox/perfLogs.json');
+  logsReader.initLogs(path);
   const frameTimes = logsReader.getFrameTimes();
   const instantFPS = logsReader.getInstantFPS();
   const timeBetweenFrames = logsReader.getTimeBetweenFrames();
