@@ -26,7 +26,7 @@ To summarize:
 ### format of the results
 
 The results are put in a JSON file whose structure is the following:
-1. **eventlogs**
+* **eventlogs**
   * *doubleClickTimes* : a list of timestamps corresponding to double click events
   * *dragEvents* : list of *timeStampsOfMoves* object
     * *timeStampsOfMoves* : list of timestamps, indicating that a drag occured (empty lists means no drag)
