@@ -34,7 +34,7 @@ module.exports.LogsReader = class LogsReader {
 
   getInstantFPS() {
     this.checkIfUndefined();
-    convertStringArrayToFloatList(this.logsObject.instantFPS);
+    return convertStringArrayToFloatList(this.logsObject.instantFPS);
   }
 
   getDragEvents() {
@@ -70,7 +70,7 @@ module.exports.LogsReader = class LogsReader {
 
   getTimeBetweenFrames() {
     this.checkIfUndefined();
-    convertStringArrayToFloatList(this.logsObject.timeBetweenFrames);
+    return convertStringArrayToFloatList(this.logsObject.timeBetweenFrames);
   }
-}
+};
 
