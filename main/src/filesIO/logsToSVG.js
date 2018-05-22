@@ -25,5 +25,5 @@ function exportAllSVG() {
   LIBRARIES.forEach(lib => exportLogs(lib));
 }
 
-module.exports.exportAllSVG = exportAllSVG;
+module.exports = exportAllSVG;
 exportAllSVG();

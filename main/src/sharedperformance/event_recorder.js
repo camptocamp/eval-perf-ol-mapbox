@@ -37,12 +37,17 @@ class EventRecorder {
       const event = this.dragEvents[this.dragEvents.length - 1];
       event.stop();
     };
+    this.onDoubleClick = () => {
+      this.doubleClickTimes.push(performance.now().toFixed(2));
+    };
     this.mapDOM.addEventListener('mousedown', this.mouseDown);
     this.mapDOM.addEventListener('mouseup', this.mouseUp);
+    this.mapDOM.addEventListener('dblclick', this.onDoubleClick);
   }
   stop() {
     this.mapDOM.removeEventListener('mousedown', this.mouseDown);
     this.mapDOM.removeEventListener('mouseup', this.mouseUp);
+    this.mapDOM.removeEventListener('dblclick', this.onDoubleClick);
   }
   toJSON() {
     return {
