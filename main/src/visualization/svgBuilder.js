@@ -1,7 +1,7 @@
 const D3Node = require('d3-node');
 const d3 = require('d3');
 
-module.exports.SVGBuilder = class SVGBuilder {
+module.exports = class SVGBuilder {
   constructor(totalWidth, totalHeight, margin, labelMargin, options) {
     this.totalWidth = totalWidth;
     this.totalHeight = totalHeight;

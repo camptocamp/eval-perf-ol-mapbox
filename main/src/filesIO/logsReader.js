@@ -17,7 +17,7 @@ function convertStringArrayToFloatList(strArray) {
 }
 
 
-module.exports.LogsReader = class LogsReader {
+module.exports = class LogsReader {
   constructor(path) {
     this.logsObject = JSON.parse(fs.readFileSync(path, 'utf8'));
   }
