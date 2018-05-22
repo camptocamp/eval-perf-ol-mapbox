@@ -57,4 +57,4 @@ async function defaultBehaviour() {
   seleniumNavigator.close();
 }
 
-export { defaultBehaviour };
+export { defaultBehaviour, SeleniumNavigator };

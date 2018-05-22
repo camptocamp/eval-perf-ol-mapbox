@@ -24,6 +24,7 @@
     "d3": "^5.1.0",
     "d3-node": "^1.1.3",
     "mapbox-gl": "^0.44.1",
+    "moment": "^2.22.1",
     "ol": "^4.6.5",
     "ol-mapbox-style": "2.11.2",
     "selenium-webdriver": "4.0.0-alpha.1"
