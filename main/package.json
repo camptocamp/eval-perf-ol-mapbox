@@ -20,14 +20,19 @@
   },
   "homepage": "https://github.com/camptocamp/eval-perf-ol-mapbox#readme",
   "dependencies": {
+    "babel-register": "^6.26.0",
     "d3": "^5.1.0",
     "d3-node": "^1.1.3",
     "mapbox-gl": "^0.44.1",
+    "mkdirp": "^0.5.1",
+    "moment": "^2.22.1",
     "ol": "^4.6.5",
     "ol-mapbox-style": "2.11.2",
-    "selenium-webdriver": "4.0.0-alpha.1"
+    "selenium-webdriver": "4.0.0-alpha.1",
+    "simple-statistics": "^6.0.1"
   },
   "devDependencies": {
+    "babel-preset-es2015": "^6.24.1",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.11.0",
