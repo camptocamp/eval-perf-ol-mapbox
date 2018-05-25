@@ -1,6 +1,6 @@
 const d3 = require('d3');
-const logsReader = require('../filesIO/logsReader');
-const svgBuilder = require('./svgBuilder');
+const LogsReader = require('../filesIO/logsReader');
+const SVGBuilder = require('./svgBuilder');
 
 const styles = `
 .bar rect {
@@ -34,7 +34,7 @@ const options = {
 };
 
 function SVGFromLogs(path) {
-  const reader = new logsReader.LogsReader(path);
+  const reader = new LogsReader(path);
   const frameTimes = reader.getFrameTimes();
   const instantFPS = reader.getInstantFPS();
   const timeBetweenFrames = reader.getTimeBetweenFrames();
@@ -51,7 +51,7 @@ function SVGFromLogs(path) {
   const svgWidth = 960;
   const svgHeight = 500;
 
-  const svgBuilderObj = new svgBuilder.SVGBuilder(svgWidth, svgHeight, margin, labelMargin, options);
+  const svgBuilderObj = new SVGBuilder(svgWidth, svgHeight, margin, labelMargin, options);
   svgBuilderObj.initXScale(frameTimes[0] - timeBetweenFrames[0], frameTimes[frameTimes.length - 1]);
   // TODO change this when first frame bug is fixed
   svgBuilderObj.initYScale(0, 150);
