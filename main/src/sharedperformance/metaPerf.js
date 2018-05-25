@@ -1,8 +1,8 @@
 import * as ss from 'simple-statistics';
 import { LogsReader } from '../filesIO/logsReader';
+import { metaPerfLogsFileName } from '../filesIO/utils';
 
 const fs = require('fs');
-const metaPerfLogsFileName = 'metaPerf.json';
 
 function indexOfMin(array) {
   let min = Infinity;

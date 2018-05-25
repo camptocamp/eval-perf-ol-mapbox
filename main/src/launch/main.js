@@ -28,7 +28,8 @@ class BenchTest {
       if (error.code !== 'EEXIST') {
         throw error;
       }
-    }
+    } 
+    this.outputConfigFile();
     const seleniumNavigator = new SeleniumNavigator({
       navigator: 'firefox',
       seleniumOptions: this.seleniumOptions,
@@ -59,6 +60,9 @@ class BenchTest {
       .then((logs) => {
         outputJSON(logs, this.getFileName(trialNumber, path), this.getPathOfRendererDir(renderer));
       });
+  }
+  outputConfigFile() {
+    outputJSON(this.configToJSON, 'config.json', this.getRootPath());
   }
   configToJSON() {
     return {
@@ -91,8 +95,8 @@ class BenchTest {
 }
 
 const renderers = ['mapbox', 'openlayers'];
-const nbTrials = 2;
-const testName = 'debugTest';
+const nbTrials = 50;
+const testName = 'secondRealTest';
 const paths = [path5sec];
 const test = new BenchTest({
   renderers, nbTrials, testName, paths, overwritePreviousTests: true,
