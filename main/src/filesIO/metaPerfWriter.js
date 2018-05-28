@@ -1,4 +1,5 @@
-import { metaperf, metaPerfLogsFileName } from '../sharedperformance/metaPerf';
+import { metaperf } from '../sharedperformance/metaPerf';
+import { metaPerfLogsFileName } from './utils';
 import { outputJSON } from './utils';
 
 const fs = require('fs');

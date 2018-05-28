@@ -10,6 +10,10 @@ function defaultOptions() {
     .setPreference('privacy.resistFingerprinting', false);
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 class SeleniumNavigator {
   constructor(options) {
     this.options = {};
@@ -39,7 +43,7 @@ class SeleniumNavigator {
       options.path = path5sec;
     }
     await this.driver.get(`http://localhost:8000/${options.rendererUsed}.html`);
-    this.driver.executeScript('window.startPerformanceRecording(document.getElementById("map"))');
+    await this.driver.executeScript('window.startPerformanceRecording(document.getElementById("map"))');
     const actions = await options.path(this.driver);
     await actions.perform();
     return this.driver.executeScript('return window.stopPerformanceRecording()');
