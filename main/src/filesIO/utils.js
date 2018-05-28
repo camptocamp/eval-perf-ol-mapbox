@@ -38,4 +38,12 @@ function writeSVGFileToDir(path, file, data) {
   writeFileToDir(path, `${file}.svg`, data);
 }
 
-export { outputJSON, metaPerfLogsFileName, getFileNamesOfLogs, writeFileToDir, writeSVGFileToDir };
+function readJSONFile(pathToFile) {
+  return JSON.parse(fs.readFileSync(pathToFile, 'utf8'));
+}
+
+export {
+  outputJSON, metaPerfLogsFileName,
+  getFileNamesOfLogs, writeFileToDir,
+  writeSVGFileToDir, readJSONFile,
+};

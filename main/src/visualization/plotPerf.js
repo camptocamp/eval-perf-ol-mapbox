@@ -1,5 +1,6 @@
+import { LogsReader } from '../filesIO/logsReader';
+
 const d3 = require('d3');
-const LogsReader = require('../filesIO/logsReader');
 const SVGBuilder = require('./svgBuilder');
 
 const styles = `
