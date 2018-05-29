@@ -14,6 +14,26 @@ class MetaPerfBoxPlot {
     this.metaPerfLogsReaders = metaPerfLogsReaders;
     this.init();
   }
+  getMinYValue() {
+    let min = Infinity;
+    this.metaPerfLogsReaders.forEach((metaPerfLogsReader) => {
+      const value = metaPerfLogsReader.getMeanFPSBoxPlotLogs().getMinimum();
+      if (value < min) {
+        min = value;
+      }
+    });
+    return min;
+  }
+  getMaxYValue() {
+    let max = -Infinity;
+    this.metaPerfLogsReaders.forEach((metaPerfLogsReader) => {
+      const value = metaPerfLogsReader.getMeanFPSBoxPlotLogs().getMaximum();
+      if (value > max) {
+        max = value;
+      }
+    });
+    return max;
+  }
   init() {
     this.d3n = new D3Node(this.options);
     this.BOX_PLOT_WIDTH = 100;
@@ -34,7 +54,7 @@ class MetaPerfBoxPlot {
   }
   initYScale() {
     this.yScale = d3.scaleLinear()
-      .domain([50, 110])
+      .domain([this.getMinYValue(), this.getMaxYValue()])
       .range([this.height, 0]);
   }
   drawXAxis() {
