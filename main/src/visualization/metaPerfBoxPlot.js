@@ -54,7 +54,7 @@ class MetaPerfBoxPlot {
   }
   initYScale() {
     this.yScale = d3.scaleLinear()
-      .domain([this.getMinYValue(), this.getMaxYValue()])
+      .domain([this.getMinYValue() - 1, this.getMaxYValue() + 1])
       .range([this.height, 0]);
   }
   drawXAxis() {
