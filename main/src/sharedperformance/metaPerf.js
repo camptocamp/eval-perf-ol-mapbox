@@ -1,6 +1,6 @@
 import * as ss from 'simple-statistics';
 import { LogsReader } from '../filesIO/logsReader';
-import { metaPerfLogsFileName } from '../filesIO/utils';
+import { metaPerfLogsFileName, getFileNamesOfLogs } from '../filesIO/utils';
 
 const fs = require('fs');
 
@@ -34,14 +34,21 @@ function isOutlier(firstQuartile, thirdQuartile, value) {
   return below || above;
 }
 
+function getMeanFPS(logsReader) {
+  const timeBetweenFrames = logsReader.getTimeBetweenFrames();
+  const totalTime = ss.sum(timeBetweenFrames);
+  const numberOfFrames = timeBetweenFrames.length;
+  const meanFrameTime = totalTime / numberOfFrames;
+  return 1000 / meanFrameTime;
+}
+
 function metaperf(pathToDir) {
-  const files = fs.readdirSync(pathToDir);
-  const filesFiltered = files.filter(name => name !== metaPerfLogsFileName);
-  const logsReader = filesFiltered.map(name => new LogsReader(`${pathToDir}${name}`));
-  const FPSArray = logsReader.map(logReader => logReader.getInstantFPS());
-  const meanFPSArray = FPSArray.map(instantFPS => ss.mean(instantFPS));
+  const files = getFileNamesOfLogs(pathToDir);
+  const logsReaders = files.map(name => new LogsReader(`${pathToDir}${name}`));
+  const FPSArray = logsReaders.map(logsReader => logsReader.getInstantFPS());
+  const meanFPSArray = logsReaders.map(logsReader => getMeanFPS(logsReader));
   const FPSVariances = FPSArray.map(instantFPS => ss.variance(instantFPS));
-  const filenameOfWorst = filesFiltered[indexOfMin(meanFPSArray)];
+  const filenameOfWorst = files[indexOfMin(meanFPSArray)];
   const meanFPSBoxPlotWithOutliers = computeBoxPlotStats(meanFPSArray);
   const varianceFPSBoxPlot = computeBoxPlotStats(FPSVariances);
   const meanFPSArrayRelevant = meanFPSArray.filter(meanFPS => !isOutlier(
@@ -50,7 +57,7 @@ function metaperf(pathToDir) {
     meanFPS,
   ));
   const meanFPSBoxPlot = computeBoxPlotStats(meanFPSArrayRelevant);
-  const sampleSize = filesFiltered.length;
+  const sampleSize = files.length;
   const outliers = sampleSize - meanFPSArrayRelevant.length;
   return {
     meanFPSArray,
