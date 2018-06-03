@@ -46,22 +46,30 @@ class MetaPerfBoxPlot {
     this.initXScale();
     this.initYScale();
   }
+  xDomain() {
+    const domain = [];
+    this.metaPerfLogsReaders.forEach((element, index) => {
+      domain.push(index);
+    });
+    return domain;
+  }
+  xRange() {
+    const range = [];
+    this.metaPerfLogsReaders.forEach((element, index) => {
+      range.push(this.width * ((index + 1) / (this.metaPerfLogsReaders.length + 1)));
+    });
+    return range;
+  }
   initXScale() {
     // TODO change this hardcode
     this.xScale = d3.scaleOrdinal()
-      .domain([0, 1])
-      .range([this.width / 4, (this.width * 3) / 4]);
+      .domain(this.xDomain())
+      .range(this.xRange());
   }
   initYScale() {
     this.yScale = d3.scaleLinear()
       .domain([this.getMinYValue() - 1, this.getMaxYValue() + 1])
       .range([this.height, 0]);
-  }
-  drawXAxis() {
-    this.svgWithMargin.append('g')
-      .attr('class', 'axis axis--x')
-      .attr('transform', `translate(0,${this.height})`)
-      .call(d3.axisBottom(this.xScale));
   }
   drawYAxis() {
     this.svgWithMargin.append('g')
@@ -81,6 +89,25 @@ class MetaPerfBoxPlot {
       this.yScale, metaPerfLogsReader.getMeanFPSBoxPlotLogs(),
     );
     return boxPlot.draw();
+  }
+  labelXAxis() {
+    const legends = this.svg.selectAll('.legend')
+      .data(this.metaPerfLogsReaders.map(metaPerfLogsReader => metaPerfLogsReader.getRenderer()))
+      .enter().append('text')
+      .attr('class', 'legend')
+      .attr('transform', (d, i) => `translate(${this.xScale(i) + this.margin.left} ,${
+        this.height + this.margin.top + 10})`)
+      .style('text-anchor', 'middle')
+      .text(d => d);
+  }
+  labelYAxis() {
+    this.svg.append('text')
+      .attr('transform', 'rotate(-90)')
+      .attr('y', 0)
+      .attr('x', 0 - (this.height / 2))
+      .attr('dy', '1em')
+      .style('text-anchor', 'middle')
+      .text('average FPS in an experiment');
   }
   toString() {
     return this.d3n.svgString();
@@ -105,7 +132,7 @@ function main() {
 }
 `;
   const margin = {
-    top: 10, right: 30, bottom: 30, left: 30,
+    top: 10, right: 30, bottom: 30, left: 60,
   };
   const svgWidth = 960;
   const svgHeight = 500;
@@ -114,9 +141,10 @@ function main() {
     d3Module: d3,
   };
   const svgGraph = new MetaPerfBoxPlot(svgWidth, svgHeight, margin, options, metaPerfLogsReaders);
-  svgGraph.drawXAxis();
   svgGraph.drawYAxis();
   svgGraph.drawBoxPlots();
+  svgGraph.labelXAxis();
+  svgGraph.labelYAxis();
   writeSVGFileToDir(outputDir, 'MetaPerfTest', svgGraph.toString());
 }
 if (typeof require !== 'undefined' && require.main === module) {

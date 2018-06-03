@@ -1,5 +1,7 @@
 import { readJSONFile } from './utils';
 
+const path = require('path');
+
 class BoxPlotLogs {
   constructor(object) {
     this.min = object.min;
@@ -26,9 +28,10 @@ class BoxPlotLogs {
 }
 
 class MetaPerfLogsReader {
-  constructor(path) {
-    this.path = path;
-    this.metaPerfObject = readJSONFile(path);
+  constructor(pathToDir) {
+    this.renderer = path.basename(path.dirname(pathToDir));
+    this.path = pathToDir;
+    this.metaPerfObject = readJSONFile(pathToDir);
     this.checkIfUndefined();
     this.varianceFPSBoxPlot = new BoxPlotLogs(this.metaPerfObject.varianceFPSBoxPlot);
     this.meanFPSBoxPlot = new BoxPlotLogs(this.metaPerfObject.meanFPSBoxPlot);
@@ -47,6 +50,9 @@ class MetaPerfLogsReader {
   }
   getVarianceFPSBoxPlotLogs() {
     return this.varianceFPSBoxPlot;
+  }
+  getRenderer() {
+    return this.renderer;
   }
 }
 
