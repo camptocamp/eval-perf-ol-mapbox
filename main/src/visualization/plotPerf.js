@@ -50,7 +50,7 @@ function SVGFromLogs(path) {
     top: 10, right: 30, bottom: 30, left: 60,
   };
   const labelMargin = {
-    left: 30, bottom: 30,
+    left: 30, bottom: 60,
   };
   const legendMargin = {
     bottom: 0,
@@ -70,10 +70,11 @@ function SVGFromLogs(path) {
   svgBuilderObj.drawDragEventsRects(dragEvents);
   svgBuilderObj.drawDblClicks(doubleClickTimes);
   svgBuilderObj.drawRenderRects(renderTimes);
-  svgBuilderObj.drawDragEventsText(dragEvents);
+  //svgBuilderObj.drawDragEventsText(dragEvents);
   svgBuilderObj.labelXAxis();
   svgBuilderObj.labelYAxis();
   svgBuilderObj.drawLegend();
+  svgBuilderObj.transformXAxis();
   return svgBuilderObj.toString();
 }
 module.exports.SVGFromLogs = SVGFromLogs;

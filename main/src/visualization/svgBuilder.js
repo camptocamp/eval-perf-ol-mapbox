@@ -12,9 +12,10 @@ module.exports = class SVGBuilder {
   }
 
   init(options) {
-    this.DRAG_EVENTS_HEIGHT = 30;
+    this.DRAG_EVENTS_HEIGHT = 12;
     this.DOUBLE_CLICKS_HEIGHT = 5;
     this.RENDER_RECT_HEIGHT = 20;
+    this.AXIS_LABELING_OFFSET = 20;
     this.d3n = new D3Node(options);
     this.width = this.totalWidth - this.labelMargin.left - this.margin.left - this.margin.right;
     this.height = this.totalHeight - this.labelMargin.bottom - this.margin.top - this.margin.bottom;
@@ -45,7 +46,7 @@ module.exports = class SVGBuilder {
       .attr(
         'transform',
         `translate(${this.width / 2} ,${
-          this.height + this.margin.top + 30})`,
+          this.height + this.margin.top + this.AXIS_LABELING_OFFSET + 30})`,
       )
       .style('text-anchor', 'middle')
       .text('time since Origin in ms');
@@ -84,7 +85,7 @@ module.exports = class SVGBuilder {
       .data(dragEvents)
       .enter().append('g')
       .attr('class', className)
-      .attr('transform', d => `translate(${this.xScale(d.start)},${this.height - this.DRAG_EVENTS_HEIGHT})`);
+      .attr('transform', d => `translate(${this.xScale(d.start)},${this.height + 1})`);
   }
   drawDragEventsRects(dragEvents) {
     this.getDragEventsGroup(dragEvents, 'drag').append('rect')
@@ -104,7 +105,7 @@ module.exports = class SVGBuilder {
       .data(doubleClickTimes)
       .enter().append('g')
       .attr('class', 'zoom')
-      .attr('transform', d => `translate(${this.xScale(d)},${this.height - this.DOUBLE_CLICKS_HEIGHT})`);
+      .attr('transform', d => `translate(${this.xScale(d)},${this.height + 1 + this.DOUBLE_CLICKS_HEIGHT})`);
 
     this.dblClickEventsSVG.append('circle')
       .attr('r', this.DOUBLE_CLICKS_HEIGHT);
@@ -130,6 +131,15 @@ module.exports = class SVGBuilder {
     this.svgWithMargin.append('g')
       .attr('class', 'axis axis--y')
       .call(d3.axisLeft(this.yScale));
+  }
+  transformXAxis() {
+    const test = this.svgWithMargin.select('.axis--x');
+    test.selectAll('.tick')
+      .selectAll('line')
+      .attr('y2', this.AXIS_LABELING_OFFSET - 3);
+    test.selectAll('.tick')
+      .selectAll('text')
+      .attr('y', this.AXIS_LABELING_OFFSET);
   }
   drawLegend() {
     const rectLegendWidth = 20;
