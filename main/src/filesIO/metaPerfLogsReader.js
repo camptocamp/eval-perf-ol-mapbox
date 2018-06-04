@@ -54,6 +54,12 @@ class MetaPerfLogsReader {
   getRenderer() {
     return this.renderer;
   }
+  getSampleSize() {
+    return this.metaPerfObject.sampleSize;
+  }
+  getOutliers() {
+    return this.metaPerfObject.outliers;
+  }
 }
 
 export { MetaPerfLogsReader, BoxPlotLogs };

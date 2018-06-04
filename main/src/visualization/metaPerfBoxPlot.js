@@ -5,6 +5,20 @@ import { writeSVGFileToDir } from '../filesIO/utils';
 const d3 = require('d3');
 const D3Node = require('d3-node');
 
+function sIfPlural(number) {
+  if (number > 1 || number < -1) {
+    return 's';
+  }
+  return '';
+}
+
+function getLegend(metaPerfLogsReader) {
+  return [`${metaPerfLogsReader.getRenderer()}`,
+    `sample size = ${metaPerfLogsReader.getSampleSize()}`,
+    `${metaPerfLogsReader.getOutliers()} outlier${sIfPlural(metaPerfLogsReader.getOutliers())} filtered out`,
+  ];
+}
+
 class MetaPerfBoxPlot {
   constructor(svgWidth, svgHeight, margin, options, metaPerfLogsReaders) {
     this.svgWidth = svgWidth;
@@ -60,6 +74,11 @@ class MetaPerfBoxPlot {
     });
     return range;
   }
+  // gridlines in y axis function
+  makeYGridlines() {
+    return d3.axisLeft(this.yScale)
+      .ticks(5);
+  }
   initXScale() {
     // TODO change this hardcode
     this.xScale = d3.scaleOrdinal()
@@ -92,13 +111,18 @@ class MetaPerfBoxPlot {
   }
   labelXAxis() {
     const legends = this.svg.selectAll('.legend')
-      .data(this.metaPerfLogsReaders.map(metaPerfLogsReader => metaPerfLogsReader.getRenderer()))
-      .enter().append('text')
-      .attr('class', 'legend')
+      .data(this.metaPerfLogsReaders)
+      .enter().append('g')
       .attr('transform', (d, i) => `translate(${this.xScale(i) + this.margin.left} ,${
-        this.height + this.margin.top + 10})`)
-      .style('text-anchor', 'middle')
-      .text(d => d);
+        this.height + this.margin.top + 20})`);
+    // Hardcoded because I can't figure how to do it properly with d3
+    for (let index = 0; index < 3; index++) {
+      legends.append('text')
+        .attr('class', 'legend')
+        .text(d => getLegend(d)[index])
+        .attr('transform', `translate(0,${index * 18})`)
+        .style('text-anchor', 'middle');
+    }
   }
   labelYAxis() {
     this.svg.append('text')
@@ -108,6 +132,13 @@ class MetaPerfBoxPlot {
       .attr('dy', '1em')
       .style('text-anchor', 'middle')
       .text('average FPS in an experiment');
+  }
+  drawYGridLines() {
+    this.svgWithMargin.append('g')
+      .attr('class', 'grid')
+      .call(this.makeYGridlines()
+        .tickSize(-this.width)
+        .tickFormat(''));
   }
   toString() {
     return this.d3n.svgString();
@@ -130,9 +161,17 @@ function main() {
 .median line {
   stroke: red
 }
+.grid line {
+  stroke: lightgrey;
+  stroke-opacity: 0.7;
+  shape-rendering: crispEdges;
+}
 `;
   const margin = {
-    top: 10, right: 30, bottom: 30, left: 60,
+    top: 10,
+    right: 30,
+    bottom: 60,
+    left: 60,
   };
   const svgWidth = 960;
   const svgHeight = 500;
@@ -145,6 +184,7 @@ function main() {
   svgGraph.drawBoxPlots();
   svgGraph.labelXAxis();
   svgGraph.labelYAxis();
+  svgGraph.drawYGridLines();
   writeSVGFileToDir(outputDir, 'MetaPerfTest', svgGraph.toString());
 }
 if (typeof require !== 'undefined' && require.main === module) {

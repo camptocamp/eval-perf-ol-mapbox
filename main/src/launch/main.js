@@ -95,8 +95,8 @@ class BenchTest {
 }
 
 const renderers = ['mapbox', 'openlayers'];
-const nbTrials = 3;
-const testName = 'demo28may';
+const nbTrials = 20;
+const testName = 'demo05june';
 const paths = [path5sec];
 const test = new BenchTest({
   renderers, nbTrials, testName, paths, overwritePreviousTests: true,
