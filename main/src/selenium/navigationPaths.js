@@ -18,6 +18,7 @@ async function path5sec(driverForActions) {
     .pause(standardPause)
     .doubleClick()
     .pause(longerPause)
+    .press()
     .move({
       duration: standardMoveDuration, origin: Origin.POINTER, x: 0, y: -200,
     })
