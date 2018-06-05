@@ -62,4 +62,4 @@ Where PATHS\_TO\_DIR are any number of arguments pointing to any register contai
   * PATH\_TO\_OUTPUT\_DIR is only one **required** argument where the file MetaPerf.svg will be written
 * In src/filesIO/ type : ```node --require babel-register logsToSVG.js PATH_TO_INPUT_DIR PATH_TO_OUTPUT_DIR```
   * Where PATH\_TO\_INPUT\_DIR is the path to a directory containing mapbox/ and openlayers/ as subdirectories each one containing perfLogs files
-  * Where PATH\_TO\_OUTPUT\_DIR  is the path to the dir where 
+  * Where PATH\_TO\_OUTPUT\_DIR  is the path to the dir where the svg files will be written
