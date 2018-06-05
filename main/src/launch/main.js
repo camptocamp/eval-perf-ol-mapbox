@@ -1,6 +1,6 @@
 import { SeleniumNavigator } from '../selenium/performance_test';
 import { outputJSON } from '../filesIO/utils';
-import { path5sec } from '../selenium/navigationPaths';
+import { path5sec, littleDrag } from '../selenium/navigationPaths';
 
 const fs = require('fs');
 
@@ -95,8 +95,8 @@ class BenchTest {
 }
 
 const renderers = ['mapbox', 'openlayers'];
-const nbTrials = 50;
-const testName = 'secondRealTest';
+const nbTrials = 20;
+const testName = 'demo05june';
 const paths = [path5sec];
 const test = new BenchTest({
   renderers, nbTrials, testName, paths, overwritePreviousTests: true,

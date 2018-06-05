@@ -1,5 +1,6 @@
+import { LogsReader } from '../filesIO/logsReader';
+
 const d3 = require('d3');
-const LogsReader = require('../filesIO/logsReader');
 const SVGBuilder = require('./svgBuilder');
 
 const styles = `
@@ -13,19 +14,22 @@ const styles = `
 .drag rect {
   fill: orange
 }
-.drag text {
+.dragText text {
   fill: #000;
   font: 10px sans-serif;
 }
 .zoom circle {
   fill: red
 }
-.zoom text {
-  fill: #000;
-  font: 8px sans-serif;
+.zoom rect {
+  fill: red;
 }
 .render rect {
   fill: violet
+}
+.legend text {
+  fill: #000;
+  font: 9px sans-serif;  
 }`;
 
 const options = {
@@ -43,15 +47,18 @@ function SVGFromLogs(path) {
   const renderTimes = reader.getRenderTimes();
 
   const margin = {
-    top: 10, right: 30, bottom: 30, left: 30,
+    top: 10, right: 30, bottom: 30, left: 60,
   };
   const labelMargin = {
-    left: 30, bottom: 30,
+    left: 30, bottom: 60,
+  };
+  const legendMargin = {
+    bottom: 0,
   };
   const svgWidth = 960;
   const svgHeight = 500;
 
-  const svgBuilderObj = new SVGBuilder(svgWidth, svgHeight, margin, labelMargin, options);
+  const svgBuilderObj = new SVGBuilder(svgWidth, svgHeight, margin, labelMargin, legendMargin, options);
   svgBuilderObj.initXScale(frameTimes[0] - timeBetweenFrames[0], frameTimes[frameTimes.length - 1]);
   // TODO change this when first frame bug is fixed
   svgBuilderObj.initYScale(0, 150);
@@ -60,12 +67,14 @@ function SVGFromLogs(path) {
   svgBuilderObj.drawXAxis();
   svgBuilderObj.drawYAxis();
   svgBuilderObj.drawFPS(frameTimes, timeBetweenFrames, instantFPS);
-  svgBuilderObj.initdragEventsGroup(dragEvents);
-  svgBuilderObj.drawDragEventsRects();
-  svgBuilderObj.drawDragEventsText();
+  svgBuilderObj.drawDragEventsRects(dragEvents);
   svgBuilderObj.drawDblClicks(doubleClickTimes);
   svgBuilderObj.drawRenderRects(renderTimes);
-
+  //svgBuilderObj.drawDragEventsText(dragEvents);
+  svgBuilderObj.labelXAxis();
+  svgBuilderObj.labelYAxis();
+  svgBuilderObj.drawLegend();
+  svgBuilderObj.transformXAxis();
   return svgBuilderObj.toString();
 }
 module.exports.SVGFromLogs = SVGFromLogs;

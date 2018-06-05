@@ -1,4 +1,4 @@
-const fs = require('fs');
+import { readJSONFile } from './utils';
 
 function createDragEventObject(start, end) {
   return { start, end };
@@ -17,9 +17,9 @@ function convertStringArrayToFloatList(strArray) {
 }
 
 
-module.exports = class LogsReader {
+class LogsReader {
   constructor(path) {
-    this.logsObject = JSON.parse(fs.readFileSync(path, 'utf8'));
+    this.logsObject = readJSONFile(path);
   }
   checkIfUndefined() {
     if (this.logsObject === undefined) {
@@ -72,5 +72,6 @@ module.exports = class LogsReader {
     this.checkIfUndefined();
     return convertStringArrayToFloatList(this.logsObject.timeBetweenFrames);
   }
-};
+}
 
+export { LogsReader, convertObjectWithStringToObjectWithFloat };

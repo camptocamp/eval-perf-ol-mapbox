@@ -21,7 +21,7 @@ apply(map, './styles/mapbox-roads-basic.json');
 
 map.setView(new View({
   center: proj.fromLonLat([6, 46]),
-  zoom: 8,
+  zoom: 9,
 }));
 
 init(map);

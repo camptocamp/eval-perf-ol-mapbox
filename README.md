@@ -37,7 +37,29 @@ The results are put in a JSON file whose structure is the following:
     * *afterRender* : timestamp before rendering
     * *beforeRender* : timestamp at the end of rendering
 
-All timestamps are captured with [performance.now()](https://developer.mozilla.org/en-US/docs/Web/API/Performance/now) and has 20 microseconds precision. 
-	
+All timestamps are captured with [performance.now()](https://developer.mozilla.org/en-US/docs/Web/API/Performance/now) and has 20 microseconds precision.
 
-Warning : tileserver use node v6 and selenium-webdriver use node v8
+## Usage
+
+### Before lauching an experiment
+ Warning : tileserver use node v6 and selenium-webdriver use node v8
+
+* in data/ type ```nvm exec v6.14.1 tileserver-gl 2017-07-03_europe_switzerland.mbtiles ```
+You need to download those tiles from openmaptiles beforehand.
+* in main/ type npm start
+
+### Gather metrics
+
+* in src/launch/ type : ```node --require babel-register main.js``` :
+it will launch an experiment (you can change parameters in the javascript main.js file
+* in src/filesIO/ type : ```node --require babel-register metaPerfWriter.js PATHS_TO_DIR```:
+Where PATHS\_TO\_DIR are any number of arguments pointing to any register containing **only** perfLogs files obtained while running selenium. It will compute statistics for the files.
+
+### Visualizing experiments
+
+* In src/visualization/ type : ```node --require babel-register metaPerfBoxPlot.js PATHS_TO_INPUT_DIR PATH_TO_OUTPUT_DIR```:
+  * Where PATHS\_TO\_INPUT\_DIR is any number of arguments pointing to metaPerfFiles and 
+  * PATH\_TO\_OUTPUT\_DIR is only one **required** argument where the file MetaPerf.svg will be written
+* In src/filesIO/ type : ```node --require babel-register logsToSVG.js PATH_TO_INPUT_DIR PATH_TO_OUTPUT_DIR```
+  * Where PATH\_TO\_INPUT\_DIR is the path to a directory containing mapbox/ and openlayers/ as subdirectories each one containing perfLogs files
+  * Where PATH\_TO\_OUTPUT\_DIR  is the path to the dir where 
