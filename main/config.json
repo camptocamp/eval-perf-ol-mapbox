@@ -1,0 +1,11 @@
+{
+  "pathToOutDir": "./out/",
+  "renderers": ["mapbox", "openlayers"],
+  "nbTrials": 10,
+  "testName": "defaultTest",
+  "initialZoom": 9,
+  "initialCenter": [46, 6],
+  "paths": ["slowerScenario"],
+  "overwritePreviousTests": true,
+  "style": "styles/osm-liberty-custom.json"
+}

@@ -2,13 +2,15 @@
 /*
  * Here to abstract the difference between openlayers and mapbox maps
  */
-class AbstractMap {
+export default class AbstractMap {
+  constructor(){
+  }
   applyStyle() {
   }
   setZoom() {
   }
   setCenter() {
   }
+  getUnderlyingMap() {
+  }
 }
-
-export default { AbstractMap };

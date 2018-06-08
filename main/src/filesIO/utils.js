@@ -39,7 +39,13 @@ function writeSVGFileToDir(path, file, data) {
 }
 
 function readJSONFile(pathToFile) {
-  return JSON.parse(fs.readFileSync(pathToFile, 'utf8'));
+  try {
+    return JSON.parse(fs.readFileSync(pathToFile, 'utf8'));
+  } catch (error) {
+    console.error(`error while reading file at ${pathToFile}`);
+    console.error(error.message);
+    return undefined;
+  }
 }
 
 export {

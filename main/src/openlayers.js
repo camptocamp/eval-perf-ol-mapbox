@@ -15,25 +15,36 @@ class InstrumentedCanvasMap extends CanvasMap {
 }
 
 class OpenLayersMap extends AbstractMap {
-  constructor() {
+  constructor(map) {
     super();
-    this.map = new InstrumentedCanvasMap({
-      target: 'map',
-    });
+    this.map = map;
     apply(this.map, './styles/mapbox-roads-basic.json');
     this.map.setView(new View({
       center: proj.fromLonLat([6, 46]),
       zoom: 9,
     }));
-    init(this.map);
   }
   setCenter(center) {
-    this.map.getView().setCenter(proj.fromLonLat(center));
+    const zoom = this.map.getView().getZoom();
+    this.map.setView(new View({
+      center: proj.fromLonLat(center),
+      zoom,
+    }));
   }
   setZoom(zoom) {
-    this.map.getView().setZoom(zoom);
+    const center = this.map.getView().getCenter();
+    this.map.setView(new View({
+      center,
+      zoom,
+    }));
   }
   setStyle(stylePath) {
     apply(this.map, stylePath);
   }
 }
+
+const map = new InstrumentedCanvasMap({
+  target: 'map',
+});
+const olMap = new OpenLayersMap(map);
+init(olMap);

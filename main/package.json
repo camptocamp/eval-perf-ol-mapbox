@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack --mode production -p",
     "dev": "webpack --mode development -d",
+    "launchExperiments": "node --require babel-register ./src/launch/main.js",
     "start": "webpack-dev-server --mode development -d --open",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

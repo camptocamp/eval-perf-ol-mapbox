@@ -1,25 +1,23 @@
 import { SeleniumNavigator } from '../selenium/performance_test';
-import { outputJSON } from '../filesIO/utils';
-import { path5sec, littleDrag } from '../selenium/navigationPaths';
+import { outputJSON, readJSONFile } from '../filesIO/utils';
+import ConfigReader from '../filesIO/ConfigReader';
 
 const fs = require('fs');
 
 const moment = require('moment');
 
+const PATH_TO_CONFIG_FILE = './config.json';
+
 class BenchTest {
-  constructor(options) {
-    if (options.pathToOutDir === undefined) {
-      this.pathToOutDir = '../../out/';
-    } else {
-      this.pathToOutDir = options.pathToOutDir;
-    }
-    this.renderers = options.renderers;
-    this.nbTrials = options.nbTrials;
-    this.testName = options.testName;
-    this.seleniumOptions = options.seleniumOptions;
-    this.paths = options.paths;
+  constructor(pathToConfigFile) {
+    this.configReader = new ConfigReader(pathToConfigFile);
+    this.pathToOutDir = this.configReader.getPathToOutDir();
+    this.renderers = this.configReader.getRenderers();
+    this.nbTrials = this.configReader.getNumberOfTrials();
+    this.testName = this.configReader.getTestName();
+    this.paths = this.configReader.getNavigationPaths();
     this.date = moment().format();
-    this.overwritePreviousTests = options.overwritePreviousTests;
+    this.overwritePreviousTests = this.configReader.getOverwritePreviousTests();
   }
   launch() {
     try {
@@ -28,13 +26,13 @@ class BenchTest {
       if (error.code !== 'EEXIST') {
         throw error;
       }
-    } 
+    }
     this.outputConfigFile();
     const seleniumNavigator = new SeleniumNavigator({
       navigator: 'firefox',
       seleniumOptions: this.seleniumOptions,
     });
-    //transform asynchronous code into synchronous code
+    // transform asynchronous code into synchronous code
     let chain = Promise.resolve();
     this.renderers.forEach((renderer) => {
       chain = chain.then(() => {
@@ -62,17 +60,11 @@ class BenchTest {
       });
   }
   outputConfigFile() {
-    outputJSON(this.configToJSON, 'config.json', this.getRootPath());
-  }
-  configToJSON() {
-    return {
-      renderers: this.renderers,
-      nbTrials: this.nbTrials,
-      testName: this.testName,
-      date: this.date,
-      seleniumOptions: this.seleniumOptions,
-      paths: this.paths,
-    };
+    outputJSON(
+      Object.assign({ date: this.date }, this.configReader.toJSON()),
+      'config.json',
+      this.getRootPath(),
+    );
   }
   getFileName(trialNumber, path) {
     return `${path.name}_${trialNumber}`;
@@ -94,11 +86,5 @@ class BenchTest {
   }
 }
 
-const renderers = ['mapbox', 'openlayers'];
-const nbTrials = 20;
-const testName = 'demo05june';
-const paths = [path5sec];
-const test = new BenchTest({
-  renderers, nbTrials, testName, paths, overwritePreviousTests: true,
-});
+const test = new BenchTest(PATH_TO_CONFIG_FILE);
 test.launch();

@@ -12,19 +12,13 @@ class InstrumentedMap extends mapboxgl.Map {
 }
 
 class MapboxMap extends AbstractMap {
-  constructor() {
+  constructor(map) {
     super();
-    this.map = new InstrumentedMap({
-      container: 'map',
-      style: 'styles/mapbox-roads-basic.json',
-      center: [6, 46],
-      zoom: 8,
-    });
+    this.map = map;
     this.showTileBoundaries = true;
-    init(this.map);
   }
   setCenter(center) {
-    this.map.setCenter(center);
+    this.map.setCenter([center[1], center[0]]);
   }
   setZoom(zoom) {
     this.map.setZoom(zoom - 1);
@@ -33,3 +27,15 @@ class MapboxMap extends AbstractMap {
     this.map.setStyle(stylePath);
   }
 }
+
+// the parameters will be overwritten by the config.json file
+// but they need to be here for mapbox to function properly
+const map = new InstrumentedMap({
+  container: 'map',
+  style: 'styles/osm-liberty-custom.json',
+  center: [0, 0],
+  zoom: 0,
+});
+map.showTileBoundaries = true;
+const mapboxMap = new MapboxMap(map);
+init(mapboxMap);
