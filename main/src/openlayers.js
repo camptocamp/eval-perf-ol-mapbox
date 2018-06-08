@@ -19,6 +19,9 @@ class OpenLayersMap extends AbstractMap {
     super();
     this.map = map;
   }
+  getUnderlyingMap() {
+    return this.map;
+  }
   setCenter(center) {
     const zoom = this.map.getView().getZoom();
     this.map.setView(new View({

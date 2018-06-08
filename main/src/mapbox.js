@@ -17,6 +17,9 @@ class MapboxMap extends AbstractMap {
     this.map = map;
     this.showTileBoundaries = true;
   }
+  getUnderlyingMap() {
+    return this.map;
+  }
   setCenter(center) {
     this.map.setCenter(center);
   }
