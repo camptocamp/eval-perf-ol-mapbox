@@ -19,6 +19,9 @@ class BenchTest {
     this.date = moment().format();
     this.overwritePreviousTests = this.configReader.getOverwritePreviousTests();
   }
+  endOfChain(indexOfRenderer, indexOfPath) {
+    return (this.paths.length === indexOfPath + 1) && (this.renderers.length === indexOfRenderer + 1);
+  }
   launch() {
     try {
       fs.mkdirSync(this.getRootPath());
@@ -34,13 +37,18 @@ class BenchTest {
     });
     // transform asynchronous code into synchronous code
     let chain = Promise.resolve();
-    this.renderers.forEach((renderer) => {
+    this.renderers.forEach((renderer, indexOfRenderer) => {
       chain = chain.then(() => {
         this.createDirForRenderer(renderer);
-        this.paths.forEach((path) => {
+        this.paths.forEach((path, indexOfPath) => {
           chain = chain.then(() => {
             for (let trialNumber = 1; trialNumber <= this.nbTrials; trialNumber++) {
               chain = this.executeAndPrintScenario(chain, renderer, path, seleniumNavigator, trialNumber);
+            }
+            if (this.endOfChain(indexOfRenderer, indexOfPath)) {
+              chain
+                .then(() => seleniumNavigator.close())
+                .then(() => console.log('test done'));
             }
           });
         });
