@@ -50,8 +50,8 @@ You need to download those tiles from openmaptiles beforehand.
 
 ### Gather metrics
 
-* in src/launch/ type : ```node --require babel-register main.js``` :
-it will launch an experiment (you can change parameters in the javascript main.js file
+* in a terminal go to _main_ subfolder and type : ```npm run launchExperiments```
+  there is a config.json file you can edit to change the experiment
 * in src/filesIO/ type : ```node --require babel-register metaPerfWriter.js PATHS_TO_DIR```:
 Where PATHS\_TO\_DIR are any number of arguments pointing to any register containing **only** perfLogs files obtained while running selenium. It will compute statistics for the files.
 

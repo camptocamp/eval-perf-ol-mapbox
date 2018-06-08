@@ -1,11 +1,11 @@
 {
   "pathToOutDir": "./out/",
   "renderers": ["mapbox", "openlayers"],
-  "nbTrials": 2,
-  "testName": "issuesFPS",
+  "nbTrials": 10,
+  "testName": "defaultExperiment",
   "initialZoom": 9,
   "initialCenter": [6, 46],
   "paths": ["path5sec"],
   "overwritePreviousTests": true,
-  "style": "styles/mapbox-roads-basic.json"
+  "style": "styles/osm-liberty-custom.json"
 }
