@@ -48,7 +48,7 @@ class BenchTest {
             if (this.endOfChain(indexOfRenderer, indexOfPath)) {
               chain
                 .then(() => seleniumNavigator.close())
-                .then(() => console.log('test done'));
+                .then(() => console.log('experiment done'));
             }
           });
         });
@@ -94,5 +94,6 @@ class BenchTest {
   }
 }
 
+console.log('starting an experiment');
 const test = new BenchTest(PATH_TO_CONFIG_FILE);
 test.launch();

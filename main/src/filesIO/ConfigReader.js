@@ -1,5 +1,5 @@
 import { path5sec, littleDrag, slowerScenario } from '../selenium/navigationPaths';
-import { readJSONFile } from './utils';
+import { readJSONFile, metaPerfLogsFileName } from './utils';
 
 const pathUtils = require('path');
 
@@ -25,8 +25,27 @@ export default class ConfigReader {
       this.config = config;
     }
   }
+
+  getPathForSVG() {
+    return `${this.getPathToOutSVGDir()}${this.getTestName}/`;
+  }
+
+  getPathsToMetaPerfFiles() {
+    return this.getPathsToRenderersDir().map(path => `${path}${metaPerfLogsFileName}`);
+  }
+
   // prepend path to config file, because the pathToOutDir is relative
   // to the directory in which is the config file
+  getPathToTestNameDir() {
+    return `${this.getPathToOutDir()}${this.getTestName()}/`;
+  }
+
+  getPathsToRenderersDir() {
+    return this.getRenderers().map(renderer => `${this.getPathToOutDir()}${this.getTestName()}/${renderer}/`);
+  }
+  getPathToOutSVGDir() {
+    return this.config.pathToOutDirSVG;
+  }
   getPathToOutDir() {
     return `${pathUtils.dirname(this.path)}/${this.config.pathToOutDir}`;
   }

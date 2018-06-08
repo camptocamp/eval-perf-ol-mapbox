@@ -6,7 +6,11 @@
   "scripts": {
     "build": "webpack --mode production -p",
     "dev": "webpack --mode development -d",
-    "launchExperiments": "node --require babel-register ./src/launch/main.js",
+    "fullProcess": "npm run launchExperiment ./config.json && npm run writeMetaPerf ./config.json && npm run drawPerfPlots ./config.json && npm run drawMetaPerf ./config.json",
+    "drawMetaPerf": "node --require babel-register ./src/visualization/metaPerfBoxPlot.js",
+    "drawPerfPlots": "node --require babel-register ./src/filesIO/logsToSVG.js",
+    "writeMetaPerf": "node --require babel-register ./src/filesIO/metaPerfWriter.js",
+    "launchExperiment": "node --require babel-register ./src/launch/main.js",
     "start": "webpack-dev-server --mode development -d --open",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

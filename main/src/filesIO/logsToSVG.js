@@ -1,8 +1,7 @@
 import { getFileNamesOfLogs, writeSVGFileToDir } from './utils';
+import ConfigReader from './ConfigReader';
 
 const plotPerf = require('../visualization/plotPerf');
-
-const LIBRARIES = ['openlayers', 'mapbox'];
 
 function filenameWithoutExtension(filename) {
   return filename.split('.')[0];
@@ -20,16 +19,23 @@ function exportLogs(inputDir, outputDir, lib) {
   exportSVGFromDirToDir(`${inputDir}${lib}/`, `${outputDir}${lib}/`);
 }
 
-function exportAllSVGFromDirToDir(inputDir, outputDir) {
-  LIBRARIES.forEach(lib => exportLogs(inputDir, outputDir, lib));
+function exportAllSVGFromDirToDir(inputDir, outputDir, renderers) {
+  renderers.forEach(lib => exportLogs(inputDir, outputDir, lib));
 }
 
 function main() {
+  console.log('exporting svg of experiment');
   const args = process.argv;
-  if (args.length !== 4) {
-    throw new Error(`wrong number of argument, expected 2 arguments, got: ${args.length - 2}`);
+  if (args.length !== 3) {
+    throw new Error(`wrong number of argument, expected 1 arguments, got: ${args.length - 2}`);
   }
-  exportAllSVGFromDirToDir(args[2], args[3]);
+  const configReader = new ConfigReader(args[2]);
+  exportAllSVGFromDirToDir(
+    configReader.getPathToOutDir(),
+    configReader.getPathToOutSVGDir(),
+    configReader.getRenderers(),
+  );
+  console.log('exporting done');
 }
 
 if (typeof require !== 'undefined' && require.main === module) {
