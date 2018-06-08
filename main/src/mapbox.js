@@ -18,7 +18,7 @@ class MapboxMap extends AbstractMap {
     this.showTileBoundaries = true;
   }
   setCenter(center) {
-    this.map.setCenter([center[1], center[0]]);
+    this.map.setCenter(center);
   }
   setZoom(zoom) {
     this.map.setZoom(zoom - 1);

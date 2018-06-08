@@ -56,7 +56,7 @@ async function slowerScenario(driverForActions) {
   return actions
     .pause(1000)
     .moveToStartPoint()
-    .drag(longerMoveDuration, -400, 40)
+    .drag(longerMoveDuration, -300, 40)
     .pause(mediumPause)
     .drag(longerMoveDuration, 30, 300)
     .doubleClick()

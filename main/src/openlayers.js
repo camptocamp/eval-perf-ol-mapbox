@@ -18,11 +18,6 @@ class OpenLayersMap extends AbstractMap {
   constructor(map) {
     super();
     this.map = map;
-    apply(this.map, './styles/mapbox-roads-basic.json');
-    this.map.setView(new View({
-      center: proj.fromLonLat([6, 46]),
-      zoom: 9,
-    }));
   }
   setCenter(center) {
     const zoom = this.map.getView().getZoom();
