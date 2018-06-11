@@ -27,7 +27,7 @@ export default class ConfigReader {
   }
 
   getPathForSVG() {
-    return `${this.getPathToOutSVGDir()}${this.getTestName}/`;
+    return `${this.getPathToOutSVGDir()}${this.getTestName()}/`;
   }
 
   getPathsToMetaPerfFiles() {

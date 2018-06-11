@@ -189,7 +189,7 @@ function main() {
   svgGraph.labelYAxis();
   svgGraph.drawYGridLines();
   writeSVGFileToDir(outputDir, 'metaPerf', svgGraph.toString());
-  console.log(`metaPerf drawn to ${configReader.getPathToOutSVGDir()}metaPerf.svg`);
+  console.log(`metaPerf drawn to ${configReader.getPathForSVG()}metaPerf.svg`);
 }
 if (typeof require !== 'undefined' && require.main === module) {
   main();

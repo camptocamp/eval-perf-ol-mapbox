@@ -31,8 +31,8 @@ function main() {
   }
   const configReader = new ConfigReader(args[2]);
   exportAllSVGFromDirToDir(
-    configReader.getPathToOutDir(),
-    configReader.getPathToOutSVGDir(),
+    configReader.getPathToTestNameDir(),
+    configReader.getPathForSVG(),
     configReader.getRenderers(),
   );
   console.log('exporting done');
