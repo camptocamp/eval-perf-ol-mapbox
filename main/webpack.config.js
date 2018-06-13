@@ -26,4 +26,7 @@ module.exports = {
     contentBase: '.',
     port: 8000,
   },
+  node: {
+    fs: 'empty'
+  }
 };

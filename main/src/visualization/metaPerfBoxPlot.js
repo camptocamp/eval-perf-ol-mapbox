@@ -1,6 +1,7 @@
 import { MetaPerfLogsReader } from '../filesIO/metaPerfLogsReader';
 import { BoxPlot } from './BoxPlot';
 import { writeSVGFileToDir } from '../filesIO/utils';
+import ConfigReader from '../filesIO/ConfigReader';
 
 const d3 = require('d3');
 const D3Node = require('d3-node');
@@ -146,10 +147,12 @@ class MetaPerfBoxPlot {
 }
 
 function main() {
-  const args = process.argv.slice(2);
-  const argsV2 = args.slice(0, args.length - 1);
-  const outputDir = args[args.length - 1];
-  const metaPerfLogsReaders = argsV2.map(path => new MetaPerfLogsReader(path));
+  console.log('drawing metaPerf ...');
+  const configFile = process.argv[2];
+  const configReader = new ConfigReader(configFile);
+  const outputDir = configReader.getPathForSVG();
+  const metaPerfLogsReaders = configReader.getPathsToMetaPerfFiles()
+    .map(path => new MetaPerfLogsReader(path));
   const styles = `
 .boxoutline line {
   stroke: #000;
@@ -185,7 +188,8 @@ function main() {
   svgGraph.labelXAxis();
   svgGraph.labelYAxis();
   svgGraph.drawYGridLines();
-  writeSVGFileToDir(outputDir, 'MetaPerfTest', svgGraph.toString());
+  writeSVGFileToDir(outputDir, 'metaPerf', svgGraph.toString());
+  console.log(`metaPerf drawn to ${configReader.getPathForSVG()}metaPerf.svg`);
 }
 if (typeof require !== 'undefined' && require.main === module) {
   main();

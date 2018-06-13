@@ -1,0 +1,12 @@
+{
+  "pathToOutDir": "./out/",
+  "pathToOutDirSVG": "./out/svg/",
+  "renderers": ["mapbox", "openlayers"],
+  "nbTrials": 5,
+  "testName": "defaultExperiment",
+  "initialZoom": 9,
+  "initialCenter": [6, 46],
+  "paths": ["path5sec"],
+  "overwritePreviousTests": true,
+  "style": "styles/mapbox-roads-basic.json"
+}

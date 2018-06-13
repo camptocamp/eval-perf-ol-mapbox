@@ -3,6 +3,7 @@ import View from 'ol/view';
 import proj from 'ol/proj';
 import { apply } from 'ol-mapbox-style';
 import init from './shared-init';
+import AbstractMap from './AbstractMap';
 
 class InstrumentedCanvasMap extends CanvasMap {
   renderFrame_(time) {
@@ -13,15 +14,35 @@ class InstrumentedCanvasMap extends CanvasMap {
   }
 }
 
+class OpenLayersMap extends AbstractMap {
+  constructor(map) {
+    super();
+    this.map = map;
+  }
+  getUnderlyingMap() {
+    return this.map;
+  }
+  setCenter(center) {
+    const zoom = this.map.getView().getZoom();
+    this.map.setView(new View({
+      center: proj.fromLonLat(center),
+      zoom,
+    }));
+  }
+  setZoom(zoom) {
+    const center = this.map.getView().getCenter();
+    this.map.setView(new View({
+      center,
+      zoom,
+    }));
+  }
+  setStyle(stylePath) {
+    apply(this.map, stylePath);
+  }
+}
+
 const map = new InstrumentedCanvasMap({
   target: 'map',
 });
-
-apply(map, './styles/mapbox-roads-basic.json');
-
-map.setView(new View({
-  center: proj.fromLonLat([6, 46]),
-  zoom: 9,
-}));
-
-init(map);
+const olMap = new OpenLayersMap(map);
+init(olMap);

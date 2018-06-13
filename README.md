@@ -44,22 +44,41 @@ All timestamps are captured with [performance.now()](https://developer.mozilla.o
 ### Before lauching an experiment
  Warning : tileserver use node v6 and selenium-webdriver use node v8
 
-* in data/ type ```nvm exec v6.14.1 tileserver-gl 2017-07-03_europe_switzerland.mbtiles ```
+* _If you want to run local styles_: In data/ type ```docker run --rm -it -v $(pwd):/data -p 8080: 80 klokantech/tileserver-gl 2017-07-03_europe_switzerland.mbtiles ```
 You need to download those tiles from openmaptiles beforehand.
 * in main/ type npm start
 
-### Gather metrics
+### Config file
 
-* in src/launch/ type : ```node --require babel-register main.js``` :
-it will launch an experiment (you can change parameters in the javascript main.js file
-* in src/filesIO/ type : ```node --require babel-register metaPerfWriter.js PATHS_TO_DIR```:
-Where PATHS\_TO\_DIR are any number of arguments pointing to any register containing **only** perfLogs files obtained while running selenium. It will compute statistics for the files.
+Variables important in the experiment are stored in a JSON file: config.json
+The structure of the JSON is the following:
+* pathToOutDir: where the logs will be stored
+* pathToOutDirSVG: where the svg will be stored
+* renderers: an array which only supports "mapbox" and "openlayers" at this time
+* nbTrials: number of trials by renderer
+* testName": name of the experiment, please change it each time you are doing a new experiment
+* initialZoom: 9,
+* initialCenter: [lng, lat]
+* paths: array of name of the function to call for the navigation path (in file src/selenium/navigationPaths), currently only supports 'path5sec', 'slowerScenario', 'littleDrag'. You can contribute by defining new navigationPaths
+* overwritePreviousTests: if true, a new experiment will overwrite the results of the previous experiment with the same testName
+* style: path to mapbox style json file
 
-### Visualizing experiments
+### The easy way
 
-* In src/visualization/ type : ```node --require babel-register metaPerfBoxPlot.js PATHS_TO_INPUT_DIR PATH_TO_OUTPUT_DIR```:
-  * Where PATHS\_TO\_INPUT\_DIR is any number of arguments pointing to metaPerfFiles and 
-  * PATH\_TO\_OUTPUT\_DIR is only one **required** argument where the file MetaPerf.svg will be written
-* In src/filesIO/ type : ```node --require babel-register logsToSVG.js PATH_TO_INPUT_DIR PATH_TO_OUTPUT_DIR```
-  * Where PATH\_TO\_INPUT\_DIR is the path to a directory containing mapbox/ and openlayers/ as subdirectories each one containing perfLogs files
-  * Where PATH\_TO\_OUTPUT\_DIR  is the path to the dir where the svg files will be written
+In a terminal go to _main_ subdirectory and type : ```npm run fullProcess```
+It will automatically launch an experiment and draw the plots of the results. Must have a valid config.json file in the directory.
+
+### The hard way
+
+If you want to have multiple config files for different tasks you can do it the following way:
+
+#### Gather metrics
+
+* in a terminal go to _main_ subfolder and type : ```npm run launchExperiment PATH\_TO\_CONFIG\_FILE```
+* type : ```npm run writeMetaPerf PATH\_TO\_CONFIG\_FILE```:
+The first line will launch selenium and gather metrics. The second line will compute statistics for the files.
+
+#### Visualizing experiments
+
+* type : ```npm run drawMetaPerf PATH\_TO\_CONFIG\_FILE```
+* type : ```npm run drawPerfPlots PATH\_TO\_CONFIG\_FILE```
