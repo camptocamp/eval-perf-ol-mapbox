@@ -44,7 +44,7 @@ All timestamps are captured with [performance.now()](https://developer.mozilla.o
 ### Before lauching an experiment
  Warning : tileserver use node v6 and selenium-webdriver use node v8
 
-* in data/ type ```docker run --rm -it -v $(pwd):/data -p 80klokantech/tileserver-gl 2017-07-03_europe_switzerland.mbtiles ```
+* _If you want to run local styles_: In data/ type ```docker run --rm -it -v $(pwd):/data -p 8080: 80 klokantech/tileserver-gl 2017-07-03_europe_switzerland.mbtiles ```
 You need to download those tiles from openmaptiles beforehand.
 * in main/ type npm start
 
