@@ -1,12 +1,13 @@
 {
+  "browser": "chrome",
   "pathToOutDir": "./out/",
   "pathToOutDirSVG": "./out/svg/",
-  "renderers": ["mapbox", "openlayers"],
+  "renderers": ["openlayers", "mapbox"],
   "nbTrials": 5,
-  "testName": "defaultExperiment",
+  "testName": "chrome",
   "initialZoom": 9,
   "initialCenter": [6, 46],
   "paths": ["path5sec"],
   "overwritePreviousTests": true,
-  "style": "styles/mapbox-roads-basic.json"
+  "style": "styles/local-mapbox-roads-basic.json"
 }

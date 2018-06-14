@@ -8,7 +8,7 @@ const longerMoveDuration = 500;
 
 class ActionWrapper {
   constructor(driverForActions) {
-    this.actions = driverForActions.actions();
+    this.actions = driverForActions.actions({ bridge: true });
     this.x = 0;
     this.y = 0;
   }

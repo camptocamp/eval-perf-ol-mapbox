@@ -20,7 +20,7 @@ class SeleniumNavigator {
     if (options === undefined) {
       options = {};
     }
-    this.options.navigator = options.navigator === undefined ? 'firefox' : options.navigator;
+    this.options.browser = (options.browser === undefined) ? 'firefox' : options.browser;
     this.options.seleniumOptions =
       options.seleniumOptions === undefined ? defaultOptions() : options.seleniumOptions;
     this.init();
@@ -28,9 +28,11 @@ class SeleniumNavigator {
 
   init() {
     this.driver = new Builder()
-      .forBrowser(this.options.navigator)
-      .setFirefoxOptions(this.options.seleniumOptions)
-      .build();
+      .forBrowser(this.options.browser);
+    if (this.options.browser = 'firefox') {
+      this.driver = this.driver.setFirefoxOptions(this.options.seleniumOptions);
+    }
+    this.driver = this.driver.build();
   }
   async executeScenario(options) {
     if (options === undefined) {

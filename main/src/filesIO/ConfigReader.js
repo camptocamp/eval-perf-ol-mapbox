@@ -25,6 +25,9 @@ export default class ConfigReader {
       this.config = config;
     }
   }
+  getBrowser() {
+    return this.config.browser;
+  }
 
   getPathForSVG() {
     return `${this.getPathToOutSVGDir()}${this.getTestName()}/`;

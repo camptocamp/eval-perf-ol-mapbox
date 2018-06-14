@@ -32,7 +32,7 @@ class BenchTest {
     }
     this.outputConfigFile();
     const seleniumNavigator = new SeleniumNavigator({
-      navigator: 'firefox',
+      browser: this.configReader.getBrowser(),
       seleniumOptions: this.seleniumOptions,
     });
     // transform asynchronous code into synchronous code
