@@ -52,13 +52,8 @@ class SeleniumNavigator {
     }
     await this.driver.get(`http://localhost:8000/${options.rendererUsed}.html`);
     await this.driver.executeScript('window.startPerformanceRecording(document.getElementById("map"))');
-    await sleep(1000);
-    const actionList = await options.path(this.driver);
-    for (let index = 0; index < actionList.length; index += 1) {
-      await actionList[index].perform();
-      await sleep(300);
-    }
-    await sleep(1000);
+    const actions = await options.path(this.driver, options.legacyMode, options.rendererUsed);
+    await actions.perform();
     return this.driver.executeScript('return window.stopPerformanceRecording()');
   }
   close() {
@@ -75,3 +70,8 @@ async function defaultBehaviour() {
 }
 
 export { defaultBehaviour, SeleniumNavigator };
+/*     const actionList = await options.path(this.driver);
+    for (let index = 0; index < actionList.length; index += 1) {
+      await actionList[index].perform();
+      await sleep(300);
+    }*/

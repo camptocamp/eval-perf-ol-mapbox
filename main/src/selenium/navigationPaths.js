@@ -1,3 +1,6 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable no-empty-function */
+/* eslint-disable no-await-in-loop */
 const { LegacyActionSequence } = require('selenium-webdriver/lib/actions');
 const { Origin } = require('selenium-webdriver/lib/input');
 const { By } = require('selenium-webdriver/lib/by');
@@ -8,7 +11,9 @@ const mediumPause = 300;
 const longerPause = 500;
 const longerMoveDuration = 500;
 
-
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 /**
  * This class is an abstraction of the moves performed by selenium,
  * As there may be an issue with the W3C actions implemented by selenium,
@@ -17,22 +22,160 @@ const longerMoveDuration = 500;
  * the renderer
  */
 class ActionWrapper {
-  constructor(driverForActions, legacyMode, renderer) {
+  constructor(driverForActions) {
     this.driverForActions = driverForActions;
-    this.legacyMode = legacyMode;
-    this.renderer = renderer;
-    if (legacyMode) {
-      this.actionsLegayList = [];
-    } else {
-      this.actions = driverForActions.actions({ bridge: true });
+  }
+  async initMap() {
+    this.map = await this.driverForActions.findElement(By.id('map'));
+  }
+  move() {
+  }
+  drag() {
+  }
+  doubleClick() {
+  }
+  async perform() {
+  }
+}
+
+const typeActionLegacySequence = 'actionLegacy';
+const typePause = 'pause';
+class LegacyActionExtended {
+  constructor(type, action) {
+    if (type !== typeActionLegacySequence && type !== typePause) {
+      throw new Error('wrong type for LegacyActionExtended');
     }
+    this.type = type;
+    this.action = action;
+  }
+  getPauseDuration() {
+    if (this.type !== typePause) {
+      throw new Error(`type must be: ${typePause} but is: ${this.type}`);
+    }
+    return this.action;
+  }
+  getActionLegacySequence() {
+    if (this.type !== typeActionLegacySequence) {
+      throw new Error(`type must be: ${typeActionLegacySequence} but is: ${this.type}`);
+    }
+    return this.action;
+  }
+  getType() {
+    return this.type;
+  }
+}
+
+class LegacyActionWrapper extends ActionWrapper {
+  constructor(driverForActions, renderer) {
+    super(driverForActions);
+    this.renderer = renderer;
+    this.actionList = [];
+    this.BREAK_MOVE_LENGTH = 10;
+    this.pressPauseDuration = 20;
+  }
+  async perform() {
+    for (let index = 0; index < this.actionList.length; index += 1) {
+      const action = this.actionList[index];
+      if (action.getType() === typePause) {
+        await sleep(action.getPauseDuration());
+      } else if (action.getType() === typeActionLegacySequence) {
+        await action.getActionLegacySequence().perform();
+      }
+    }
+  }
+  moveToStartPoint() {
+    this.actionList.push(new LegacyActionExtended(
+      typeActionLegacySequence,
+      new LegacyActionSequence(this.driverForActions).mouseMove(this.map),
+    ));
+  }
+  pause(duration) {
+    this.actionList.push(new LegacyActionExtended(
+      typePause,
+      duration,
+    ));
+    return this;
+  }
+  drag(duration, x, y) {
+    this._press();
+    const action = new LegacyActionSequence(this.driverForActions);
+    for (let index = 0; index < this.BREAK_MOVE_LENGTH; index += 1) {
+      action.mouseMove({
+        x: Math.floor(x / this.BREAK_MOVE_LENGTH),
+        y: Math.floor(y / this.BREAK_MOVE_LENGTH),
+      });
+    }
+    action.mouseMove({ x: x % this.BREAK_MOVE_LENGTH, y: y % this.BREAK_MOVE_LENGTH });
+    this.actionList.push(new LegacyActionExtended(
+      typeActionLegacySequence,
+      action,
+    ));
+    this.actionList.push(new LegacyActionExtended(
+      typePause,
+      this.pressPauseDuration,
+    ));
+    this._release();
+    this.actionList.push(new LegacyActionExtended(
+      typeActionLegacySequence,
+      new LegacyActionSequence(this.driverForActions).mouseMove({ x: -x, y: -y }),
+    ));
+    this.actionList.push(new LegacyActionExtended(
+      typePause,
+      this.pressPauseDuration,
+    ));
+    return this;
+  }
+  _press() {
+    this.actionList.push(new LegacyActionExtended(
+      typeActionLegacySequence,
+      new LegacyActionSequence(this.driverForActions).mouseDown(),
+    ));
+    this.actionList.push(new LegacyActionExtended(
+      typePause,
+      this.pressPauseDuration,
+    ));
+  }
+  _release() {
+    this.actionList.push(new LegacyActionExtended(
+      typeActionLegacySequence,
+      new LegacyActionSequence(this.driverForActions).mouseUp(),
+    ));
+    this.actionList.push(new LegacyActionExtended(
+      typePause,
+      this.pressPauseDuration,
+    ));
+  }
+  doubleClick() {
+    this.moveToStartPoint();
+    if (this.renderer === 'openlayers') {
+      this.actionList.push(new LegacyActionExtended(
+        typeActionLegacySequence,
+        new LegacyActionSequence(this.driverForActions).click().click(),
+      ));
+    } else if (this.renderer === 'mapbox') {
+      this.actionList.push(new LegacyActionExtended(
+        typeActionLegacySequence,
+        new LegacyActionSequence(this.driverForActions).doubleClick(),
+      ));
+    }
+    return this;
+  }
+}
+
+class W3CActionWrapper extends ActionWrapper {
+  constructor(driverForActions) {
+    super(driverForActions);
+    this.actions = driverForActions.actions({ bridge: true });
     this.x = 0;
     this.y = 0;
   }
-  async moveToStartPoint() {
-    const map = await this.driverForActions.findElement(By.id('map'));
+
+  moveToStartPoint() {
+    if (this.map === undefined) {
+      throw new Error('map has not been initialized');
+    }
     this.actions.move({
-      x: 0, y: 0, duration: 0, origin: map,
+      x: 0, y: 0, duration: 0, origin: this.map,
     });
     return this;
   }
@@ -71,8 +214,16 @@ class ActionWrapper {
   }
 }
 
-async function slowerScenario(driverForActions) {
-  const actions = new ActionWrapper(driverForActions);
+function getActionWrapper(driverForActions, legacyMode, renderer) {
+  if (legacyMode) {
+    return new LegacyActionWrapper(driverForActions, renderer);
+  }
+  return new W3CActionWrapper(driverForActions);
+}
+
+async function slowerScenario(driverForActions, legacyMode, renderer) {
+  const actions = getActionWrapper(driverForActions, legacyMode, renderer);
+  await actions.initMap();
   return actions
     .pause(1000)
     .moveToStartPoint()
@@ -103,9 +254,9 @@ async function slowerScenario(driverForActions) {
     .pause(mediumPause);
 }
 
-async function path5sec(driverForActions) {
-  let actions = new ActionWrapper(driverForActions);
-  actions = await actions.moveToStartPoint();
+async function path5sec(driverForActions, legacyMode, renderer) {
+  const actions = getActionWrapper(driverForActions, legacyMode, renderer);
+  await actions.initMap();
   return actions
     .pause(100)
     .drag(standardMoveDuration, -200, 0)
@@ -121,14 +272,12 @@ async function path5sec(driverForActions) {
     .doubleClick()
     .pause(standardPause)
     .drag(standardMoveDuration, -200, 200)
-    .move(standardMoveDuration, 200, -200)
     .drag(standardMoveDuration, -200, 200)
     .doubleClick()
     .pause(longerPause)
     .drag(longerMoveDuration, 400, -50)
     .drag(standardMoveDuration, 0, 200)
-    .pause(standardPause)
-    .comeBackToOrigin();
+    .pause(standardPause);
 }
 
 async function littleDrag(driverForActions) {
