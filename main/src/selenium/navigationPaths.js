@@ -1,4 +1,6 @@
+const { LegacyActionSequence } = require('selenium-webdriver/lib/actions');
 const { Origin } = require('selenium-webdriver/lib/input');
+const { By } = require('selenium-webdriver/lib/by');
 
 const standardPause = 100;
 const standardMoveDuration = 200;
@@ -6,14 +8,32 @@ const mediumPause = 300;
 const longerPause = 500;
 const longerMoveDuration = 500;
 
+
+/**
+ * This class is an abstraction of the moves performed by selenium,
+ * As there may be an issue with the W3C actions implemented by selenium,
+ * there is an option to go into legacyMode
+ * In legacyMode openlayers and mapbox seem to behave differently, so there will be the need to specify
+ * the renderer
+ */
 class ActionWrapper {
-  constructor(driverForActions) {
-    this.actions = driverForActions.actions({ bridge: true });
+  constructor(driverForActions, legacyMode, renderer) {
+    this.driverForActions = driverForActions;
+    this.legacyMode = legacyMode;
+    this.renderer = renderer;
+    if (legacyMode) {
+      this.actionsLegayList = [];
+    } else {
+      this.actions = driverForActions.actions({ bridge: true });
+    }
     this.x = 0;
     this.y = 0;
   }
-  moveToStartPoint() {
-    this.move(600, 300);
+  async moveToStartPoint() {
+    const map = await this.driverForActions.findElement(By.id('map'));
+    this.actions.move({
+      x: 0, y: 0, duration: 0, origin: map,
+    });
     return this;
   }
   comeBackToOrigin() {
@@ -84,9 +104,9 @@ async function slowerScenario(driverForActions) {
 }
 
 async function path5sec(driverForActions) {
-  const actions = new ActionWrapper(driverForActions);
+  let actions = new ActionWrapper(driverForActions);
+  actions = await actions.moveToStartPoint();
   return actions
-    .moveToStartPoint()
     .pause(100)
     .drag(standardMoveDuration, -200, 0)
     .pause(standardPause)
@@ -124,4 +144,37 @@ async function littleDrag(driverForActions) {
     .pause(standardPause);
 }
 
-export { path5sec, littleDrag, slowerScenario };
+async function legacySimpleScenario(driverForActions) {
+  const actionsList = [];
+  const actions1 = new LegacyActionSequence(driverForActions);
+  const map = await driverForActions.findElement(By.id('map'));
+  actions1.mouseMove(map).mouseDown();
+  const actions2 = new LegacyActionSequence(driverForActions);
+  actions2.mouseMove({ x: -20, y: 0 });
+  actions2.mouseMove({ x: -20, y: 0 });
+  actions2.mouseMove({ x: -20, y: 0 });
+  actions2.mouseMove({ x: -20, y: 0 });
+  actions2.mouseMove({ x: -20, y: 0 });
+  actions2.mouseMove({ x: -20, y: 0 });
+  actions2.mouseMove({ x: -20, y: 0 });
+  actions2.mouseMove({ x: 0, y: 10 });
+  actions2.mouseMove({ x: 0, y: 10 });
+  actions2.mouseMove({ x: 0, y: 10 });
+  actions2.mouseMove({ x: 0, y: 10 });
+  actions2.mouseMove({ x: 0, y: 10 });
+  actions2.mouseMove({ x: 0, y: 10 });
+  actions2.mouseMove({ x: 0, y: 10 });
+  actions2.mouseMove({ x: 0, y: 10 });
+
+  const actions3 = new LegacyActionSequence(driverForActions).mouseUp();
+  const actions4 = new LegacyActionSequence(driverForActions).doubleClick();
+  const actions5 = new LegacyActionSequence(driverForActions).click().click();
+  actionsList.push(actions1);
+  actionsList.push(actions2);
+  actionsList.push(actions3);
+  actionsList.push(actions4);
+  actionsList.push(actions5);
+  return actionsList;
+}
+
+export { path5sec, littleDrag, slowerScenario, legacySimpleScenario };

@@ -4,6 +4,12 @@ import { outputJSON } from '../filesIO/utils';
 const { Builder, By } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
 
+function resolveLater(resolve, reject) {
+  setTimeout(() => {
+    resolve(10);
+  }, 300);
+}
+
 function defaultOptions() {
   return new firefox.Options()
     .setPreference('privacy.reduceTimerPrecision', false)
@@ -46,8 +52,13 @@ class SeleniumNavigator {
     }
     await this.driver.get(`http://localhost:8000/${options.rendererUsed}.html`);
     await this.driver.executeScript('window.startPerformanceRecording(document.getElementById("map"))');
-    const actions = await options.path(this.driver);
-    await actions.perform();
+    await sleep(1000);
+    const actionList = await options.path(this.driver);
+    for (let index = 0; index < actionList.length; index += 1) {
+      await actionList[index].perform();
+      await sleep(300);
+    }
+    await sleep(1000);
     return this.driver.executeScript('return window.stopPerformanceRecording()');
   }
   close() {

@@ -25,7 +25,22 @@ module.exports = {
   devServer: {
     contentBase: '.',
     port: 8000,
-  },
+  },  
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        query: {
+          cacheDirectory: true
+        },
+        include: [
+	  /ol-mapbox-style/,
+	  /mapbox-gl-style-spec/
+	]
+      },
+    ],
+  },	
   node: {
     fs: 'empty'
   }

@@ -1,4 +1,4 @@
-import { path5sec, littleDrag, slowerScenario } from '../selenium/navigationPaths';
+import { path5sec, littleDrag, slowerScenario, legacySimpleScenario } from '../selenium/navigationPaths';
 import { readJSONFile, metaPerfLogsFileName } from './utils';
 
 const pathUtils = require('path');
@@ -11,6 +11,8 @@ function pathStringToFunction(navigationPath) {
       return littleDrag;
     case 'slowerScenario':
       return slowerScenario;
+    case 'legacySimpleScenario':
+      return legacySimpleScenario;
     default:
       throw new Error(`${navigationPath} is not a valid function name for a navigation path`);
   }

@@ -4,10 +4,10 @@
   "pathToOutDirSVG": "./out/svg/",
   "renderers": ["openlayers", "mapbox"],
   "nbTrials": 5,
-  "testName": "chrome",
+  "testName": "chromeLegacy",
   "initialZoom": 9,
   "initialCenter": [6, 46],
-  "paths": ["path5sec"],
+  "paths": ["legacySimpleScenario"],
   "overwritePreviousTests": true,
   "style": "styles/local-mapbox-roads-basic.json"
 }
