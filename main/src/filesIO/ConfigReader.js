@@ -11,8 +11,6 @@ function pathStringToFunction(navigationPath) {
       return littleDrag;
     case 'slowerScenario':
       return slowerScenario;
-    case 'legacySimpleScenario':
-      return legacySimpleScenario;
     default:
       throw new Error(`${navigationPath} is not a valid function name for a navigation path`);
   }

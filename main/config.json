@@ -4,11 +4,11 @@
   "pathToOutDir": "./out/",
   "pathToOutDirSVG": "./out/svg/",
   "renderers": ["openlayers", "mapbox"],
-  "nbTrials": 5,
-  "testName": "chromeLegacyRefactorPaths",
+  "nbTrials": 50,
+  "testName": "chromeTestPerf",
   "initialZoom": 9,
   "initialCenter": [6, 46],
-  "paths": ["path5sec"],
+  "paths": ["slowerScenario"],
   "overwritePreviousTests": true,
-  "style": "styles/local-mapbox-roads-basic.json"
+  "style": "styles/mapbox-roads-basic.json"
 }
