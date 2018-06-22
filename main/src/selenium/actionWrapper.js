@@ -18,8 +18,8 @@ function sleep(ms) {
  * This class is an abstraction of the moves performed by selenium,
  * As there may be an issue with the W3C actions implemented by selenium,
  * there is an option to go into legacyMode
- * In legacyMode openlayers and mapbox seem to behave differently, so there will be the need to specify
- * the renderer
+ * In legacyMode openlayers and mapbox seem to behave differently,
+ * so there will be the need to specify the renderer
  */
 class ActionWrapper {
   constructor(driverForActions) {
@@ -38,30 +38,12 @@ class ActionWrapper {
   }
 }
 
-const typeActionLegacySequence = 'actionLegacy';
-const typePause = 'pause';
-class LegacyActionExtended {
-  constructor(type, action) {
-    if (type !== typeActionLegacySequence && type !== typePause) {
-      throw new Error('wrong type for LegacyActionExtended');
-    }
-    this.type = type;
-    this.action = action;
+class Pause {
+  constructor(duration) {
+    this.duration = duration;
   }
-  getPauseDuration() {
-    if (this.type !== typePause) {
-      throw new Error(`type must be: ${typePause} but is: ${this.type}`);
-    }
-    return this.action;
-  }
-  getActionLegacySequence() {
-    if (this.type !== typeActionLegacySequence) {
-      throw new Error(`type must be: ${typeActionLegacySequence} but is: ${this.type}`);
-    }
-    return this.action;
-  }
-  getType() {
-    return this.type;
+  async perform() {
+    await sleep(this.duration);
   }
 }
 
@@ -77,25 +59,15 @@ class LegacyActionWrapper extends ActionWrapper {
   async perform() {
     for (let index = 0; index < this.actionList.length; index += 1) {
       const action = this.actionList[index];
-      if (action.getType() === typePause) {
-        await sleep(action.getPauseDuration());
-      } else if (action.getType() === typeActionLegacySequence) {
-        await action.getActionLegacySequence().perform();
-      }
+      await action.perform();
     }
   }
   moveToStartPoint() {
-    this.actionList.push(new LegacyActionExtended(
-      typeActionLegacySequence,
-      new LegacyActionSequence(this.driverForActions).mouseMove(this.map),
-    ));
+    this.actionList.push(new LegacyActionSequence(this.driverForActions).mouseMove(this.map));
     return this;
   }
   pause(duration) {
-    this.actionList.push(new LegacyActionExtended(
-      typePause,
-      duration,
-    ));
+    this.actionList.push(new Pause(duration));
     return this;
   }
   drag(duration, x, y) {
@@ -108,62 +80,31 @@ class LegacyActionWrapper extends ActionWrapper {
       });
     }
     action.mouseMove({ x: x % this.BREAK_MOVE_LENGTH, y: y % this.BREAK_MOVE_LENGTH });
-    this.actionList.push(new LegacyActionExtended(
-      typeActionLegacySequence,
-      action,
-    ));
-    this.actionList.push(new LegacyActionExtended(
-      typePause,
-      this.pressPauseDuration,
-    ));
+    this.actionList.push(action);
+    this.actionList.push(new Pause(this.pressPauseDuration));
     this._release();
-    this.actionList.push(new LegacyActionExtended(
-      typeActionLegacySequence,
-      new LegacyActionSequence(this.driverForActions).mouseMove({ x: -x, y: -y }),
-    ));
-    this.actionList.push(new LegacyActionExtended(
-      typePause,
-      duration,
-    ));
+    this.actionList.push(new LegacyActionSequence(this.driverForActions)
+      .mouseMove({ x: -x, y: -y }));
+    this.actionList.push(new Pause(duration));
     return this;
   }
   _press() {
-    this.actionList.push(new LegacyActionExtended(
-      typeActionLegacySequence,
-      new LegacyActionSequence(this.driverForActions).mouseDown(),
-    ));
-    this.actionList.push(new LegacyActionExtended(
-      typePause,
-      this.pressPauseDuration,
-    ));
+    this.actionList.push(new LegacyActionSequence(this.driverForActions).mouseDown());
+    this.actionList.push(new Pause(this.pressPauseDuration));
   }
   _release() {
-    this.actionList.push(new LegacyActionExtended(
-      typeActionLegacySequence,
-      new LegacyActionSequence(this.driverForActions).mouseUp(),
-    ));
-    this.actionList.push(new LegacyActionExtended(
-      typePause,
-      this.pressPauseDuration,
-    ));
+    this.actionList.push(new LegacyActionSequence(this.driverForActions).mouseUp());
+    this.actionList.push(new Pause(this.pressPauseDuration));
   }
   doubleClick() {
     this.moveToStartPoint();
+    // the two renderers implement their double click listener differently
     if (this.renderer === 'openlayers') {
-      this.actionList.push(new LegacyActionExtended(
-        typeActionLegacySequence,
-        new LegacyActionSequence(this.driverForActions).click().click(),
-      ));
+      this.actionList.push(new LegacyActionSequence(this.driverForActions).click().click());
     } else if (this.renderer === 'mapbox') {
-      this.actionList.push(new LegacyActionExtended(
-        typeActionLegacySequence,
-        new LegacyActionSequence(this.driverForActions).doubleClick(),
-      ));
+      this.actionList.push(new LegacyActionSequence(this.driverForActions).doubleClick());
     }
-    this.actionList.push(new LegacyActionExtended(
-      typePause,
-      this.zoomPauseDuration,
-    ));
+    this.actionList.push(new Pause(this.zoomPauseDuration));
     return this;
   }
 }
@@ -180,9 +121,7 @@ class W3CActionWrapper extends ActionWrapper {
     if (this.map === undefined) {
       throw new Error('map has not been initialized');
     }
-    this.actions.move({
-      x: 0, y: 0, duration: 0, origin: this.map,
-    });
+    this.actions.move({ duration: 0, origin: this.map });
     return this;
   }
   pause(duration) {
