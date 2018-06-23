@@ -11,6 +11,7 @@ const PATH_TO_CONFIG_FILE = './config.json';
 class BenchTest {
   constructor(pathToConfigFile) {
     this.configReader = new ConfigReader(pathToConfigFile);
+    this.legacyMode = this.configReader.getLegacyMode();
     this.pathToOutDir = this.configReader.getPathToOutDir();
     this.renderers = this.configReader.getRenderers();
     this.nbTrials = this.configReader.getNumberOfTrials();
@@ -32,7 +33,7 @@ class BenchTest {
     }
     this.outputConfigFile();
     const seleniumNavigator = new SeleniumNavigator({
-      navigator: 'firefox',
+      browser: this.configReader.getBrowser(),
       seleniumOptions: this.seleniumOptions,
     });
     // transform asynchronous code into synchronous code
@@ -59,6 +60,7 @@ class BenchTest {
     return chainPromise.then(() => {
       const options = {
         rendererUsed: renderer,
+        legacyMode: this.legacyMode,
         path,
       };
       return seleniumNavigator.executeScenario(options);

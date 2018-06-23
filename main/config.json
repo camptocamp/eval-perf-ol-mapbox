@@ -1,12 +1,14 @@
 {
+  "browser": "chrome",
+  "legacyModeForActions": true,
   "pathToOutDir": "./out/",
   "pathToOutDirSVG": "./out/svg/",
-  "renderers": ["mapbox", "openlayers"],
-  "nbTrials": 5,
-  "testName": "defaultExperiment",
+  "renderers": ["openlayers", "mapbox"],
+  "nbTrials": 2,
+  "testName": "chromeTestPerf",
   "initialZoom": 9,
   "initialCenter": [6, 46],
-  "paths": ["path5sec"],
+  "paths": ["slowerScenario"],
   "overwritePreviousTests": true,
-  "style": "styles/mapbox-roads-basic.json"
+  "style": "styles/osm-liberty-custom.json"
 }

@@ -1,5 +1,4 @@
 import { path5sec } from './navigationPaths';
-import { outputJSON } from '../filesIO/utils';
 
 const { Builder, By } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
@@ -10,17 +9,13 @@ function defaultOptions() {
     .setPreference('privacy.resistFingerprinting', false);
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 class SeleniumNavigator {
   constructor(options) {
     this.options = {};
     if (options === undefined) {
       options = {};
     }
-    this.options.navigator = options.navigator === undefined ? 'firefox' : options.navigator;
+    this.options.browser = (options.browser === undefined) ? 'firefox' : options.browser;
     this.options.seleniumOptions =
       options.seleniumOptions === undefined ? defaultOptions() : options.seleniumOptions;
     this.init();
@@ -28,9 +23,11 @@ class SeleniumNavigator {
 
   init() {
     this.driver = new Builder()
-      .forBrowser(this.options.navigator)
-      .setFirefoxOptions(this.options.seleniumOptions)
-      .build();
+      .forBrowser(this.options.browser);
+    if (this.options.browser === 'firefox') {
+      this.driver = this.driver.setFirefoxOptions(this.options.seleniumOptions);
+    }
+    this.driver = this.driver.build();
   }
   async executeScenario(options) {
     if (options === undefined) {
@@ -44,7 +41,7 @@ class SeleniumNavigator {
     }
     await this.driver.get(`http://localhost:8000/${options.rendererUsed}.html`);
     await this.driver.executeScript('window.startPerformanceRecording(document.getElementById("map"))');
-    const actions = await options.path(this.driver);
+    const actions = await options.path(this.driver, options.legacyMode, options.rendererUsed);
     await actions.perform();
     return this.driver.executeScript('return window.stopPerformanceRecording()');
   }
@@ -53,12 +50,4 @@ class SeleniumNavigator {
   }
 }
 
-
-async function defaultBehaviour() {
-  const seleniumNavigator = new SeleniumNavigator();
-  const logs = await seleniumNavigator.executeScenario();
-  outputJSON(logs, 'scenario1.json', '../../out/mapbox/');
-  seleniumNavigator.close();
-}
-
-export { defaultBehaviour, SeleniumNavigator };
+export { SeleniumNavigator };

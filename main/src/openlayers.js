@@ -1,7 +1,7 @@
-import CanvasMap from 'ol/canvasmap';
-import View from 'ol/view';
-import proj from 'ol/proj';
-import { apply } from 'ol-mapbox-style';
+import { apply  } from 'ol-mapbox-style';
+import CanvasMap from 'ol/Map';
+import View from 'ol/View';
+import { fromLonLat  } from 'ol/proj';
 import init from './shared-init';
 import AbstractMap from './AbstractMap';
 
@@ -25,7 +25,7 @@ class OpenLayersMap extends AbstractMap {
   setCenter(center) {
     const zoom = this.map.getView().getZoom();
     this.map.setView(new View({
-      center: proj.fromLonLat(center),
+      center: fromLonLat(center),
       zoom,
     }));
   }
@@ -44,5 +44,14 @@ class OpenLayersMap extends AbstractMap {
 const map = new InstrumentedCanvasMap({
   target: 'map',
 });
+map.on('pointermove', (e) => {
+  document.getElementById('features').innerHTML = JSON.stringify(e.pixel);
+});
 const olMap = new OpenLayersMap(map);
+map.on('pointerdown', (e) => {
+  console.log(`pointer down !`);
+});
+map.on('pointerup', (e) => {
+  console.log(`pointer up!`);
+});
 init(olMap);

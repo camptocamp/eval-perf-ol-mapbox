@@ -1,4 +1,4 @@
-import { path5sec, littleDrag, slowerScenario } from '../selenium/navigationPaths';
+import { path5sec, littleDrag, slowerScenario, legacySimpleScenario } from '../selenium/navigationPaths';
 import { readJSONFile, metaPerfLogsFileName } from './utils';
 
 const pathUtils = require('path');
@@ -24,6 +24,17 @@ export default class ConfigReader {
     } else {
       this.config = config;
     }
+  }
+  getLegacyMode() {
+    const legacyMode = this.config.legacyModeForActions;
+    if (!legacyMode && this.getBrowser === 'chrome') {
+      throw new Error('currnently legacyModeForActions must be true while working with chrome');
+    }
+    return this.config.legacyModeForActions;
+  }
+
+  getBrowser() {
+    return this.config.browser;
   }
 
   getPathForSVG() {

@@ -40,5 +40,8 @@ const map = new InstrumentedMap({
   zoom: 0,
 });
 map.showTileBoundaries = true;
+map.on('mousemove', (e) => {
+  document.getElementById('features').innerHTML = JSON.stringify(e.point);
+});
 const mapboxMap = new MapboxMap(map);
 init(mapboxMap);

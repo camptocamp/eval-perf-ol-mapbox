@@ -1,58 +1,18 @@
-const { Origin } = require('selenium-webdriver/lib/input');
+import {
+  getActionWrapper,
+  standardMoveDuration, standardPause,
+  longerMoveDuration, longerPause,
+  mediumPause,
+} from './actionWrapper';
 
-const standardPause = 100;
-const standardMoveDuration = 200;
-const mediumPause = 300;
-const longerPause = 500;
-const longerMoveDuration = 500;
-
-class ActionWrapper {
-  constructor(driverForActions) {
-    this.actions = driverForActions.actions();
-    this.x = 0;
-    this.y = 0;
-  }
-  moveToStartPoint() {
-    this.move(600, 300);
-    return this;
-  }
-  comeBackToOrigin() {
-    this.move(-this.x, -this.y);
-    return this;
-  }
-  pause(duration) {
-    this.actions = this.actions.pause(duration);
-    return this;
-  }
-  move(x, y) {
-    this.x += x;
-    this.y += y;
-    this.actions = this.actions.move({ origin: Origin.POINTER, x, y });
-    return this;
-  }
-  drag(duration, x, y) {
-    this.actions = this.actions.press()
-      .move({
-        duration, origin: Origin.POINTER, x, y,
-      })
-      .release()
-      .move({ origin: Origin.POINTER, x: -x, y: -y });
-    return this;
-  }
-  doubleClick() {
-    this.actions = this.actions
-      .pause(longerPause)
-      .doubleClick()
-      .pause(standardPause);
-    return this;
-  }
-  async perform() {
-    return this.actions.perform();
-  }
+async function beginScenario(driverForActions, legacyMode, renderer) {
+  const actions = getActionWrapper(driverForActions, legacyMode, renderer);
+  await actions.initMap();
+  return actions;
 }
 
-async function slowerScenario(driverForActions) {
-  const actions = new ActionWrapper(driverForActions);
+async function slowerScenario(driverForActions, legacyMode, renderer) {
+  const actions = await beginScenario(driverForActions, legacyMode, renderer);
   return actions
     .pause(1000)
     .moveToStartPoint()
@@ -83,11 +43,11 @@ async function slowerScenario(driverForActions) {
     .pause(mediumPause);
 }
 
-async function path5sec(driverForActions) {
-  const actions = new ActionWrapper(driverForActions);
+async function path5sec(driverForActions, legacyMode, renderer) {
+  const actions = await beginScenario(driverForActions, legacyMode, renderer);
   return actions
-    .moveToStartPoint()
     .pause(100)
+    .moveToStartPoint()
     .drag(standardMoveDuration, -200, 0)
     .pause(standardPause)
     .doubleClick()
@@ -101,26 +61,22 @@ async function path5sec(driverForActions) {
     .doubleClick()
     .pause(standardPause)
     .drag(standardMoveDuration, -200, 200)
-    .move(standardMoveDuration, 200, -200)
     .drag(standardMoveDuration, -200, 200)
     .doubleClick()
     .pause(longerPause)
     .drag(longerMoveDuration, 400, -50)
     .drag(standardMoveDuration, 0, 200)
-    .pause(standardPause)
-    .comeBackToOrigin();
+    .pause(standardPause);
 }
 
-async function littleDrag(driverForActions) {
-  const actions = driverForActions.actions();
+async function littleDrag(driverForActions, legacyMode, renderer) {
+  const actions = await beginScenario(driverForActions, legacyMode, renderer);
   return actions
-    .move({ origin: Origin.VIEWPORT, x: 600, y: 300 })
+    .moveToStartPoint()
     .pause(100)
-    .press()
-    .move({
-      duration: standardMoveDuration, origin: Origin.POINTER, x: -200, y: 0,
+    .drag({
+      duration: standardMoveDuration, x: -200, y: 0,
     })
-    .release()
     .pause(standardPause);
 }
 
