@@ -1,6 +1,5 @@
 {
-  "browser": "chrome",
-  "modeForActions": "renderer",
+  "browser": "firefox",
   "pathToOutDir": "./out/",
   "pathToOutDirSVG": "./out/svg/",
   "renderers": ["openlayers", "mapbox"],
@@ -8,7 +7,7 @@
   "testName": "RendererMode",
   "initialZoom": 9,
   "initialCenter": [6, 46],
-  "paths": ["slowerScenario"],
+  "paths": ["path5sec"],
   "overwritePreviousTests": true,
   "style": "styles/local-osm-liberty-custom.json"
 }

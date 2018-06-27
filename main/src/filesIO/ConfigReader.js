@@ -1,4 +1,4 @@
-import { path5sec, littleDrag, slowerScenario, legacySimpleScenario } from '../selenium/navigationPaths';
+import { path5sec, slowerScenario } from '../selenium/navigationPaths';
 import { readJSONFile, metaPerfLogsFileName } from './utils';
 
 const pathUtils = require('path');
@@ -7,8 +7,6 @@ function pathStringToFunction(navigationPath) {
   switch (navigationPath) {
     case 'path5sec':
       return path5sec;
-    case 'littleDrag':
-      return littleDrag;
     case 'slowerScenario':
       return slowerScenario;
     default:
@@ -25,10 +23,6 @@ export default class ConfigReader {
       this.config = config;
     }
   }
-  getMode() {
-    return this.config.modeForActions;
-  }
-
   getBrowser() {
     return this.config.browser;
   }

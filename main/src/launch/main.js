@@ -1,5 +1,5 @@
 import { SeleniumNavigator } from '../selenium/performance_test';
-import { outputJSON, readJSONFile } from '../filesIO/utils';
+import { outputJSON } from '../filesIO/utils';
 import ConfigReader from '../filesIO/ConfigReader';
 
 const fs = require('fs');
@@ -11,7 +11,6 @@ const PATH_TO_CONFIG_FILE = './config.json';
 class BenchTest {
   constructor(pathToConfigFile) {
     this.configReader = new ConfigReader(pathToConfigFile);
-    this.mode = this.configReader.getMode();
     this.pathToOutDir = this.configReader.getPathToOutDir();
     this.renderers = this.configReader.getRenderers();
     this.nbTrials = this.configReader.getNumberOfTrials();
@@ -43,14 +42,13 @@ class BenchTest {
         this.createDirForRenderer(renderer);
         this.paths.forEach((path, indexOfPath) => {
           chain = chain.then(() => {
-            for (let trialNumber = 1; trialNumber <= this.nbTrials; trialNumber++) {
+            for (let trialNumber = 1; trialNumber <= this.nbTrials; trialNumber += 1) {
               chain = this.executeAndPrintScenario(chain, renderer, path, seleniumNavigator, trialNumber);
               chain = chain.then(() => console.log('run done'));
             }
             if (this.endOfChain(indexOfRenderer, indexOfPath)) {
               chain
-                .then(() => seleniumNavigator.close())
-                .then(() => console.log('experiment done'));
+                .then(() => seleniumNavigator.close());
             }
           });
         });
@@ -61,7 +59,6 @@ class BenchTest {
     return chainPromise.then(() => {
       const options = {
         rendererUsed: renderer,
-        mode: this.mode,
         path,
       };
       return seleniumNavigator.executeScenario(options);
