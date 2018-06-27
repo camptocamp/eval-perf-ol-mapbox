@@ -33,13 +33,13 @@ class MapboxMap extends AbstractMap {
     if (duration === undefined) {
       duration = 1000;
     }
-    this.map.panBy([xPixels, yPixels], { duration });
+    this.map.panBy([xPixels, yPixels], { duration, easing: x => x });
   }
   zoomIn(duration) {
-    this.map.zoomIn({ duration });
+    this.map.zoomIn({ duration, easing: x => x });
   }
   zoomOut(duration) {
-    this.map.zoomOut({ duration });
+    this.map.zoomOut({ duration, easing: x => x });
   }
 }
 

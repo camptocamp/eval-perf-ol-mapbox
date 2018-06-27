@@ -1,5 +1,6 @@
 import { apply } from 'ol-mapbox-style';
 import CanvasMap from 'ol/Map';
+import { linear } from 'ol/easing';
 import View from 'ol/View';
 import { fromLonLat } from 'ol/proj';
 import init from './shared-init';
@@ -46,15 +47,16 @@ class OpenLayersMap extends AbstractMap {
     view.animate({
       center: this.map.getCoordinateFromPixel(newCenter),
       duration,
+      easing: linear,
     });
   }
   zoomIn(duration) {
     const view = this.map.getView();
-    view.animate({ zoom: view.getZoom() + 1, duration });
+    view.animate({ zoom: view.getZoom() + 1, duration, easing: linear });
   }
   zoomOut(duration) {
     const view = this.map.getView();
-    view.animate({ zoom: view.getZoom() - 1, duration });
+    view.animate({ zoom: view.getZoom() - 1, duration, easing: linear });
   }
 }
 
