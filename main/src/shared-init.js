@@ -12,6 +12,10 @@ export default function init(abstractMapImplementation) {
   );
   window.startPerformanceRecording = () => performanceRecording.startPerformanceRecording();
   window.stopPerformanceRecording = () => performanceRecording.stopPerformanceRecording();
+  window.drag = (xPixels, yPixels, duration) =>
+    abstractMapImplementation.drag(xPixels, yPixels, duration);
+  window.zoomIn = duration => abstractMapImplementation.zoomIn(duration);
+  window.zoomOut = duration => abstractMapImplementation.zoomOut(duration);
   const configReader = new ConfigReader(PATH_TO_CONFIG_FILE, config);
   abstractMapImplementation.setStyle(configReader.getStyle());
   abstractMapImplementation.setZoom(configReader.getZoom());

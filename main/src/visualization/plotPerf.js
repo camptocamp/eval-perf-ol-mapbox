@@ -70,7 +70,7 @@ function SVGFromLogs(path) {
   svgBuilderObj.drawDragEventsRects(dragEvents);
   svgBuilderObj.drawDblClicks(doubleClickTimes);
   svgBuilderObj.drawRenderRects(renderTimes);
-  //svgBuilderObj.drawDragEventsText(dragEvents);
+  // svgBuilderObj.drawDragEventsText(dragEvents);
   svgBuilderObj.labelXAxis();
   svgBuilderObj.labelYAxis();
   svgBuilderObj.drawLegend();

@@ -25,12 +25,8 @@ export default class ConfigReader {
       this.config = config;
     }
   }
-  getLegacyMode() {
-    const legacyMode = this.config.legacyModeForActions;
-    if (!legacyMode && this.getBrowser === 'chrome') {
-      throw new Error('currnently legacyModeForActions must be true while working with chrome');
-    }
-    return this.config.legacyModeForActions;
+  getMode() {
+    return this.config.modeForActions;
   }
 
   getBrowser() {

@@ -1,14 +1,14 @@
 {
   "browser": "chrome",
-  "legacyModeForActions": true,
+  "modeForActions": "renderer",
   "pathToOutDir": "./out/",
   "pathToOutDirSVG": "./out/svg/",
   "renderers": ["openlayers", "mapbox"],
   "nbTrials": 2,
-  "testName": "chromeTestPerf",
+  "testName": "RendererMode",
   "initialZoom": 9,
   "initialCenter": [6, 46],
   "paths": ["slowerScenario"],
   "overwritePreviousTests": true,
-  "style": "styles/osm-liberty-custom.json"
+  "style": "styles/local-osm-liberty-custom.json"
 }

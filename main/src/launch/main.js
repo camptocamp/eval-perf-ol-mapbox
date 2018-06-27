@@ -11,7 +11,7 @@ const PATH_TO_CONFIG_FILE = './config.json';
 class BenchTest {
   constructor(pathToConfigFile) {
     this.configReader = new ConfigReader(pathToConfigFile);
-    this.legacyMode = this.configReader.getLegacyMode();
+    this.mode = this.configReader.getMode();
     this.pathToOutDir = this.configReader.getPathToOutDir();
     this.renderers = this.configReader.getRenderers();
     this.nbTrials = this.configReader.getNumberOfTrials();
@@ -45,6 +45,7 @@ class BenchTest {
           chain = chain.then(() => {
             for (let trialNumber = 1; trialNumber <= this.nbTrials; trialNumber++) {
               chain = this.executeAndPrintScenario(chain, renderer, path, seleniumNavigator, trialNumber);
+              chain = chain.then(() => console.log('run done'));
             }
             if (this.endOfChain(indexOfRenderer, indexOfPath)) {
               chain
@@ -60,7 +61,7 @@ class BenchTest {
     return chainPromise.then(() => {
       const options = {
         rendererUsed: renderer,
-        legacyMode: this.legacyMode,
+        mode: this.mode,
         path,
       };
       return seleniumNavigator.executeScenario(options);

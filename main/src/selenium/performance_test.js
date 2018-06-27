@@ -1,4 +1,5 @@
 import { path5sec } from './navigationPaths';
+import promiseTimeOut from './promiseTimeOut';
 
 const { Builder, By } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
@@ -41,8 +42,15 @@ class SeleniumNavigator {
     }
     await this.driver.get(`http://localhost:8000/${options.rendererUsed}.html`);
     await this.driver.executeScript('window.startPerformanceRecording(document.getElementById("map"))');
-    const actions = await options.path(this.driver, options.legacyMode, options.rendererUsed);
-    await actions.perform();
+    const actions = await options.path(this.driver, options.mode, options.rendererUsed);
+    try {
+      await promiseTimeOut(30000, actions.perform());
+    } catch (error) {
+      console.log(error.message);
+      await this.driver.get(`http://localhost:8000/${options.rendererUsed}.html`);
+      this.close();
+    }
+    console.log('hey');
     return this.driver.executeScript('return window.stopPerformanceRecording()');
   }
   close() {

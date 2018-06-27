@@ -5,6 +5,7 @@ const { LegacyActionSequence } = require('selenium-webdriver/lib/actions');
 const { Origin } = require('selenium-webdriver/lib/input');
 const { By } = require('selenium-webdriver/lib/by');
 
+const pauseBetweenEveryAction = 50;
 const standardPause = 100;
 const standardMoveDuration = 200;
 const mediumPause = 300;
@@ -14,6 +15,43 @@ const longerMoveDuration = 500;
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+const safetyPause = 500;
+class RendererZoomIn {
+  constructor(duration) {
+    this.duration = duration;
+  }
+  async perform(driverForActions) {
+    driverForActions.executeScript(`window.zoomIn(${this.duration})`);
+  }
+}
+class RendererZoomOut {
+  constructor(duration) {
+    this.duration = duration;
+  }
+  async perform(driverForActions) {
+    driverForActions.executeScript(`window.zoomOut(${this.duration})`);
+  }
+}
+class RendererDrag {
+  constructor(xPixels, yPixels, duration) {
+    this.xPixels = xPixels;
+    this.yPixels = yPixels;
+    this.duration = duration;
+  }
+  async perform(driverForActions) {
+    driverForActions.executeScript(`window.drag(${-this.xPixels},${-this.yPixels},${this.duration})`);
+  }
+}
+
+class Pause {
+  constructor(duration) {
+    this.duration = duration;
+  }
+  async perform() {
+    await sleep(this.duration);
+  }
+}
+
 /**
  * This class is an abstraction of the moves performed by selenium,
  * As there may be an issue with the W3C actions implemented by selenium,
@@ -21,6 +59,7 @@ function sleep(ms) {
  * In legacyMode openlayers and mapbox seem to behave differently,
  * so there will be the need to specify the renderer
  */
+
 class ActionWrapper {
   constructor(driverForActions) {
     this.driverForActions = driverForActions;
@@ -37,15 +76,35 @@ class ActionWrapper {
   async perform() {
   }
 }
-
-class Pause {
-  constructor(duration) {
-    this.duration = duration;
+// TODO refactor this once it works
+const zoomDuration = 1000;
+class RendererActionWrapper extends ActionWrapper {
+  constructor(driverForActions) {
+    super(driverForActions);
+    this.actions = [];
+  }
+  moveToStartPoint() {
+    return this;
+  }
+  drag(duration, xPixels, yPixels) {
+    this.actions.push(new RendererDrag(xPixels, yPixels, duration));
+    return this.pause(duration + safetyPause);
+  }
+  pause(duration) {
+    this.actions.push(new Pause(duration));
+    return this;
+  }
+  doubleClick() {
+    this.actions.push(new RendererZoomIn(zoomDuration));
+    return this.pause(zoomDuration + safetyPause);
   }
   async perform() {
-    await sleep(this.duration);
+    for (let index = 0; index < this.actions.length; index += 1) {
+      await this.actions[index].perform(this.driverForActions);
+    }
   }
 }
+
 
 class LegacyActionWrapper extends ActionWrapper {
   constructor(driverForActions, renderer) {
@@ -122,6 +181,7 @@ class W3CActionWrapper extends ActionWrapper {
       throw new Error('map has not been initialized');
     }
     this.actions.move({ duration: 0, origin: this.map });
+    this.actions.pause(pauseBetweenEveryAction);
     return this;
   }
   pause(duration) {
@@ -133,8 +193,11 @@ class W3CActionWrapper extends ActionWrapper {
       .move({
         duration, origin: Origin.POINTER, x, y,
       })
+      .pause(pauseBetweenEveryAction)
       .release()
-      .move({ origin: Origin.POINTER, x: -x, y: -y });
+      .pause(pauseBetweenEveryAction)
+      .move({ origin: Origin.POINTER, x: -x, y: -y })
+      .pause(pauseBetweenEveryAction);
     return this;
   }
   doubleClick() {
@@ -150,11 +213,17 @@ class W3CActionWrapper extends ActionWrapper {
   }
 }
 
-function getActionWrapper(driverForActions, legacyMode, renderer) {
-  if (legacyMode) {
-    return new LegacyActionWrapper(driverForActions, renderer);
+function getActionWrapper(driverForActions, mode, renderer) {
+  switch (mode) {
+    case 'legacy':
+      return new LegacyActionWrapper(driverForActions, renderer);
+    case 'w3c':
+      return new W3CActionWrapper(driverForActions);
+    case 'renderer':
+      return new RendererActionWrapper(driverForActions);
+    default:
+      throw new Error(`unrecognized mode: ${mode}`);
   }
-  return new W3CActionWrapper(driverForActions);
 }
 
 export {

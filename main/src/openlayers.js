@@ -1,7 +1,7 @@
-import { apply  } from 'ol-mapbox-style';
+import { apply } from 'ol-mapbox-style';
 import CanvasMap from 'ol/Map';
 import View from 'ol/View';
-import { fromLonLat  } from 'ol/proj';
+import { fromLonLat } from 'ol/proj';
 import init from './shared-init';
 import AbstractMap from './AbstractMap';
 
@@ -39,19 +39,27 @@ class OpenLayersMap extends AbstractMap {
   setStyle(stylePath) {
     apply(this.map, stylePath);
   }
+  drag(xPixels, yPixels, duration) {
+    const view = this.map.getView();
+    const pixelCenter = this.map.getPixelFromCoordinate(view.getCenter());
+    const newCenter = [pixelCenter[0] + xPixels, pixelCenter[1] + yPixels];
+    view.animate({
+      center: this.map.getCoordinateFromPixel(newCenter),
+      duration,
+    });
+  }
+  zoomIn(duration) {
+    const view = this.map.getView();
+    view.animate({ zoom: view.getZoom() + 1, duration });
+  }
+  zoomOut(duration) {
+    const view = this.map.getView();
+    view.animate({ zoom: view.getZoom() - 1, duration });
+  }
 }
 
 const map = new InstrumentedCanvasMap({
   target: 'map',
 });
-map.on('pointermove', (e) => {
-  document.getElementById('features').innerHTML = JSON.stringify(e.pixel);
-});
 const olMap = new OpenLayersMap(map);
-map.on('pointerdown', (e) => {
-  console.log(`pointer down !`);
-});
-map.on('pointerup', (e) => {
-  console.log(`pointer up!`);
-});
 init(olMap);

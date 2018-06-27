@@ -5,14 +5,14 @@ import {
   mediumPause,
 } from './actionWrapper';
 
-async function beginScenario(driverForActions, legacyMode, renderer) {
-  const actions = getActionWrapper(driverForActions, legacyMode, renderer);
+async function beginScenario(driverForActions, mode, renderer) {
+  const actions = getActionWrapper(driverForActions, mode, renderer);
   await actions.initMap();
   return actions;
 }
 
-async function slowerScenario(driverForActions, legacyMode, renderer) {
-  const actions = await beginScenario(driverForActions, legacyMode, renderer);
+async function slowerScenario(driverForActions, mode, renderer) {
+  const actions = await beginScenario(driverForActions, mode, renderer);
   return actions
     .pause(1000)
     .moveToStartPoint()
@@ -43,8 +43,8 @@ async function slowerScenario(driverForActions, legacyMode, renderer) {
     .pause(mediumPause);
 }
 
-async function path5sec(driverForActions, legacyMode, renderer) {
-  const actions = await beginScenario(driverForActions, legacyMode, renderer);
+async function path5sec(driverForActions, mode, renderer) {
+  const actions = await beginScenario(driverForActions, mode, renderer);
   return actions
     .pause(100)
     .moveToStartPoint()
@@ -69,8 +69,8 @@ async function path5sec(driverForActions, legacyMode, renderer) {
     .pause(standardPause);
 }
 
-async function littleDrag(driverForActions, legacyMode, renderer) {
-  const actions = await beginScenario(driverForActions, legacyMode, renderer);
+async function littleDrag(driverForActions, mode, renderer) {
+  const actions = await beginScenario(driverForActions, mode, renderer);
   return actions
     .moveToStartPoint()
     .pause(100)

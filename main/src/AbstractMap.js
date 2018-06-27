@@ -13,4 +13,10 @@ export default class AbstractMap {
   }
   getUnderlyingMap() {
   }
+  drag(){
+  }
+  zoomIn(){
+  }
+  zoomOut(){
+  }
 }
