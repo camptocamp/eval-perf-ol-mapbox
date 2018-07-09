@@ -29,6 +29,18 @@ class MapboxMap extends AbstractMap {
   setStyle(stylePath) {
     this.map.setStyle(stylePath);
   }
+  drag(xPixels, yPixels, duration) {
+    if (duration === undefined) {
+      duration = 1000;
+    }
+    this.map.panBy([xPixels, yPixels], { duration, easing: x => x });
+  }
+  zoomIn(duration) {
+    this.map.zoomIn({ duration, easing: x => x });
+  }
+  zoomOut(duration) {
+    this.map.zoomOut({ duration, easing: x => x });
+  }
 }
 
 // the parameters will be overwritten by the config.json file

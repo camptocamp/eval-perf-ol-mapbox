@@ -52,6 +52,7 @@ You need to download those tiles from openmaptiles beforehand.
 
 Variables important in the experiment are stored in a JSON file: config.json
 The structure of the JSON is the following:
+* browser: currently supports firefox and chrome
 * pathToOutDir: where the logs will be stored
 * pathToOutDirSVG: where the svg will be stored
 * renderers: an array which only supports "mapbox" and "openlayers" at this time
@@ -59,7 +60,7 @@ The structure of the JSON is the following:
 * testName": name of the experiment, please change it each time you are doing a new experiment
 * initialZoom: 9,
 * initialCenter: [lng, lat]
-* paths: array of name of the function to call for the navigation path (in file src/selenium/navigationPaths), currently only supports 'path5sec', 'slowerScenario', 'littleDrag'. You can contribute by defining new navigationPaths
+* paths: array of name of the function to call for the navigation path (in file src/selenium/navigationPaths), currently only supports 'path5sec', 'slowerScenario'. You can contribute by defining new navigationPaths
 * overwritePreviousTests: if true, a new experiment will overwrite the results of the previous experiment with the same testName
 * style: path to mapbox style json file
 
