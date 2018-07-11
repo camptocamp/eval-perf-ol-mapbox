@@ -21,6 +21,9 @@ class LogsReader {
   constructor(path) {
     this.logsObject = readJSONFile(path);
   }
+  getVersion() {
+    return this.logsObject.version;
+  }
   checkIfUndefined() {
     if (this.logsObject === undefined) {
       console.error('could not read logs properly');

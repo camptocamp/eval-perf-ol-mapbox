@@ -4,7 +4,7 @@
   "pathToOutDirSVG": "./out/svg/",
   "renderers": ["openlayers4", "mapbox"],
   "nbTrials": 2,
-  "testName": "DefaultTest",
+  "testName": "KAD MERAD",
   "initialZoom": 9,
   "initialCenter": [6, 46],
   "paths": ["path5sec"],

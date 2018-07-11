@@ -42,6 +42,18 @@ function getMeanFPS(logsReader) {
   return 1000 / meanFrameTime;
 }
 
+function getVersion(logsReaders) {
+  const version = logsReaders[0].getVersion();
+  logsReaders.slice(1, logsReaders.length).forEach((logsReader) => {
+    const version2 = logsReader.getVersion();
+    if (version !== version2) {
+      throw new Error(`different versions: ${version} and ${version2} in same folders,<
+       probably an issue in the generation of data`);
+    }
+  });
+  return version;
+}
+
 function metaperf(pathToDir) {
   const files = getFileNamesOfLogs(pathToDir);
   const logsReaders = files.map(name => new LogsReader(`${pathToDir}${name}`));
@@ -59,6 +71,7 @@ function metaperf(pathToDir) {
   const meanFPSBoxPlot = computeBoxPlotStats(meanFPSArrayRelevant);
   const sampleSize = files.length;
   const outliers = sampleSize - meanFPSArrayRelevant.length;
+  const version = logsReaders[0].getVersion();
   return {
     meanFPSArray,
     FPSVariances,
@@ -68,6 +81,7 @@ function metaperf(pathToDir) {
     sampleSize,
     meanFPSBoxPlot,
     outliers,
+    version,
   };
 }
 

@@ -14,7 +14,7 @@ function sIfPlural(number) {
 }
 
 function getLegend(metaPerfLogsReader) {
-  return [`${metaPerfLogsReader.getRenderer()}`,
+  return [`${metaPerfLogsReader.getRenderer()} ${metaPerfLogsReader.getVersion()}`,
     `sample size = ${metaPerfLogsReader.getSampleSize()}`,
     `${metaPerfLogsReader.getOutliers()} outlier${sIfPlural(metaPerfLogsReader.getOutliers())} filtered out`,
   ];

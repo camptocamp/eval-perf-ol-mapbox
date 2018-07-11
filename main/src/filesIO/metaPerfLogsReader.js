@@ -60,6 +60,9 @@ class MetaPerfLogsReader {
   getOutliers() {
     return this.metaPerfObject.outliers;
   }
+  getVersion() {
+    return this.metaPerfObject.version;
+  }
 }
 
 export { MetaPerfLogsReader, BoxPlotLogs };
