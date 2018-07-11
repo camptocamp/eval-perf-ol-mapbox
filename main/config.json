@@ -2,12 +2,12 @@
   "browser": "chrome",
   "pathToOutDir": "./out/",
   "pathToOutDirSVG": "./out/svg/",
-  "renderers": ["openlayers", "mapbox"],
-  "nbTrials": 50,
+  "renderers": ["openlayers4", "mapbox"],
+  "nbTrials": 2,
   "testName": "DefaultTest",
   "initialZoom": 9,
   "initialCenter": [6, 46],
   "paths": ["path5sec"],
-  "overwritePreviousTests": false,
-  "style": "styles/osm-liberty-custom.json"
+  "overwritePreviousTests": true,
+  "style": "styles/mapbox-roads-basic.json"
 }

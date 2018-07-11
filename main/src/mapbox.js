@@ -14,6 +14,7 @@ class InstrumentedMap extends mapboxgl.Map {
 class MapboxMap extends AbstractMap {
   constructor(map) {
     super();
+    this.version = mapboxgl.version;
     this.map = map;
     this.showTileBoundaries = true;
   }
@@ -26,7 +27,7 @@ class MapboxMap extends AbstractMap {
   setZoom(zoom) {
     this.map.setZoom(zoom - 1);
   }
-  setStyle(stylePath) {
+  async setStyle(stylePath) {
     this.map.setStyle(stylePath);
   }
   drag(xPixels, yPixels, duration) {
@@ -40,6 +41,9 @@ class MapboxMap extends AbstractMap {
   }
   zoomOut(duration) {
     this.map.zoomOut({ duration, easing: x => x });
+  }
+  getVersion() {
+    return this.version;
   }
 }
 
