@@ -4,10 +4,10 @@
   "pathToOutDirSVG": "./out/svg/",
   "renderers": ["openlayers4", "mapbox"],
   "nbTrials": 2,
-  "testName": "medium style",
+  "testName": "simple style",
   "initialZoom": 9,
   "initialCenter": [6, 46],
   "paths": ["path5sec"],
   "overwritePreviousTests": true,
-  "style": "styles/osm-liberty-medium.json"
+  "style": "styles/mapbox-roads-basic.json"
 }
