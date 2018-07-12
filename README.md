@@ -46,7 +46,6 @@ All timestamps are captured with [performance.now()](https://developer.mozilla.o
 
 * _If you want to run local styles_: In data/ type ```docker run --rm -it -v $(pwd):/data -p 8080: 80 klokantech/tileserver-gl 2017-07-03_europe_switzerland.mbtiles ```
 You need to download those tiles from openmaptiles beforehand.
-* in main/ type npm start
 
 ### Config file
 
@@ -58,21 +57,25 @@ The structure of the JSON is the following:
 * renderers: an array which only supports "mapbox" and "openlayers" at this time
 * nbTrials: number of trials by renderer
 * testName": name of the experiment, please change it each time you are doing a new experiment
-* initialZoom: 9,
+* initialZoom: an integer reprensenting the zoom level of the map,
 * initialCenter: [lng, lat]
 * paths: array of name of the function to call for the navigation path (in file src/selenium/navigationPaths), currently only supports 'path5sec', 'slowerScenario'. You can contribute by defining new navigationPaths
 * overwritePreviousTests: if true, a new experiment will overwrite the results of the previous experiment with the same testName
 * style: path to mapbox style json file
-
+* olTime: specify a time for the release of ol and the corresponding ol-mapbox-style version, it must match a valid key in the ol_versions.json file
 ### The easy way
 
 In a terminal go to _main_ subdirectory and type : ```npm run fullProcess```
-It will automatically launch an experiment and draw the plots of the results. Must have a valid config.json file in the directory.
+It will automatically launch an experiment and draw the plots of the results. Must have a valid config.json file in the directory. It is possible to add the path to another config file.
 
 ### The hard way
 
 If you want to have multiple config files for different tasks you can do it the following way:
 
+#### Starting server
+
+* in a terminal go to _main_ subfolder and type : ```npm start```
+* If running ol version 4.x.x, type: ```npm run startOl4```
 #### Gather metrics
 
 * in a terminal go to _main_ subfolder and type : ```npm run launchExperiment PATH\_TO\_CONFIG\_FILE```

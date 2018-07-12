@@ -2,13 +2,13 @@
   "browser": "chrome",
   "pathToOutDir": "./out/",
   "pathToOutDirSVG": "./out/svg/",
-  "renderers": ["openlayers", "mapbox"],
+  "renderers": ["openlayers"],
   "nbTrials": 2,
-  "testName": "medium style",
+  "testName": "testMarch2018Version",
   "initialZoom": 9,
   "initialCenter": [6, 46],
   "paths": ["path5sec"],
   "overwritePreviousTests": true,
   "style": "styles/osm-liberty-medium.json",
-  "olTime": "july2018"
+  "olTime": "march2018"
 }

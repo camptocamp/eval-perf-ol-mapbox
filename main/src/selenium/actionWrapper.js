@@ -89,4 +89,5 @@ export {
   longerPause,
   mediumPause,
   standardZoomDuration,
+  sleep,
 };
