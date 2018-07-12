@@ -190,6 +190,7 @@ function main(pathToConfigFile) {
   writeSVGFileToDir(outputDir, 'metaPerf', svgGraph.toString());
   console.log(`metaPerf drawn to ${configReader.getPathForSVG()}metaPerf.svg`);
 }
+
 if (typeof require !== 'undefined' && require.main === module) {
   const pathToConfigFile = expectConfigFile();
   main(pathToConfigFile);
