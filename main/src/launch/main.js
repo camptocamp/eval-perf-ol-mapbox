@@ -1,12 +1,10 @@
 import { SeleniumNavigator } from '../selenium/performance_test';
-import { outputJSON } from '../filesIO/utils';
+import { outputJSON, expectConfigFile } from '../filesIO/utils';
 import ConfigReader from '../filesIO/ConfigReader';
 
 const fs = require('fs');
 
 const moment = require('moment');
-
-const PATH_TO_CONFIG_FILE = './config.json';
 
 class BenchTest {
   constructor(pathToConfigFile) {
@@ -69,7 +67,9 @@ class BenchTest {
   }
   outputConfigFile() {
     outputJSON(
-      Object.assign({ date: this.date }, this.configReader.toJSON()),
+      Object.assign({
+        date: this.date,
+      }, this.configReader.toJSON()),
       'config.json',
       this.getRootPath(),
     );
@@ -95,5 +95,8 @@ class BenchTest {
 }
 
 console.log('starting an experiment');
-const test = new BenchTest(PATH_TO_CONFIG_FILE);
-test.launch();
+if (typeof require !== 'undefined' && require.main === module) {
+  const configPath = expectConfigFile();
+  const test = new BenchTest(configPath);
+  test.launch();
+}

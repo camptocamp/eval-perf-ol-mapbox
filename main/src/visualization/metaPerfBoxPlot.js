@@ -1,6 +1,6 @@
 import { MetaPerfLogsReader } from '../filesIO/metaPerfLogsReader';
 import { BoxPlot } from './BoxPlot';
-import { writeSVGFileToDir } from '../filesIO/utils';
+import { writeSVGFileToDir, expectConfigFile } from '../filesIO/utils';
 import ConfigReader from '../filesIO/ConfigReader';
 
 const d3 = require('d3');
@@ -146,10 +146,9 @@ class MetaPerfBoxPlot {
   }
 }
 
-function main() {
+function main(pathToConfigFile) {
   console.log('drawing metaPerf ...');
-  const configFile = process.argv[2];
-  const configReader = new ConfigReader(configFile);
+  const configReader = new ConfigReader(pathToConfigFile);
   const outputDir = configReader.getPathForSVG();
   const metaPerfLogsReaders = configReader.getPathsToMetaPerfFiles()
     .map(path => new MetaPerfLogsReader(path));
@@ -192,5 +191,6 @@ function main() {
   console.log(`metaPerf drawn to ${configReader.getPathForSVG()}metaPerf.svg`);
 }
 if (typeof require !== 'undefined' && require.main === module) {
-  main();
+  const pathToConfigFile = expectConfigFile();
+  main(pathToConfigFile);
 }

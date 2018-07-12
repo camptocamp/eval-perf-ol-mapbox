@@ -1,4 +1,4 @@
-import { getFileNamesOfLogs, writeSVGFileToDir } from './utils';
+import { getFileNamesOfLogs, writeSVGFileToDir, expectConfigFile } from './utils';
 import ConfigReader from './ConfigReader';
 
 const plotPerf = require('../visualization/plotPerf');
@@ -23,13 +23,9 @@ function exportAllSVGFromDirToDir(inputDir, outputDir, renderers) {
   renderers.forEach(lib => exportLogs(inputDir, outputDir, lib));
 }
 
-function main() {
+function main(pathToConfigFile) {
   console.log('exporting svg of experiment');
-  const args = process.argv;
-  if (args.length !== 3) {
-    throw new Error(`wrong number of argument, expected 1 arguments, got: ${args.length - 2}`);
-  }
-  const configReader = new ConfigReader(args[2]);
+  const configReader = new ConfigReader(pathToConfigFile);
   exportAllSVGFromDirToDir(
     configReader.getPathToTestNameDir(),
     configReader.getPathForSVG(),
@@ -39,5 +35,6 @@ function main() {
 }
 
 if (typeof require !== 'undefined' && require.main === module) {
-  main();
+  const pathToConfigFile = expectConfigFile();
+  main(pathToConfigFile);
 }
