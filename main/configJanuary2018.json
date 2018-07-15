@@ -3,12 +3,12 @@
   "pathToOutDir": "./out/",
   "pathToOutDirSVG": "./out/svg/",
   "renderers": ["openlayers"],
-  "nbTrials": 2,
-  "testName": "testMarch2018Version",
+  "nbTrials": 50,
+  "testName": "RealTestJanuary-slow",
   "initialZoom": 9,
   "initialCenter": [6, 46],
-  "paths": ["path5sec"],
+  "paths": ["slowerScenario"],
   "overwritePreviousTests": true,
-  "style": "styles/mapbox-roads-basic.json",
+  "style": "styles/osm-liberty-medium.json",
   "olTime": "january2018"
 }

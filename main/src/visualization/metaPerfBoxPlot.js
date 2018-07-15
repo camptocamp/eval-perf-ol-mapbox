@@ -1,6 +1,9 @@
-import { MetaPerfLogsReader } from '../filesIO/metaPerfLogsReader';
-import { BoxPlot } from './BoxPlot';
-import { writeSVGFileToDir, expectConfigFile } from '../filesIO/utils';
+import {MetaPerfLogsReader,} from '../filesIO/metaPerfLogsReader';
+import {BoxPlot,} from './BoxPlot';
+import {
+  writeSVGFileToDir,
+  expectConfigFile,
+} from '../filesIO/utils';
 import ConfigReader from '../filesIO/ConfigReader';
 
 const d3 = require('d3');
@@ -146,11 +149,15 @@ class MetaPerfBoxPlot {
   }
 }
 
-function main(pathToConfigFile) {
-  console.log('drawing metaPerf ...');
+function drawMetaPerfBoxPlotFromConfig(pathToConfigFile) {
   const configReader = new ConfigReader(pathToConfigFile);
-  const outputDir = configReader.getPathForSVG();
-  const metaPerfLogsReaders = configReader.getPathsToMetaPerfFiles()
+  main(configReader.getPathsToMetaPerfFiles(), configReader.getPathForSVG());
+}
+
+function main(pathToMetaPerfFiles, pathToOutDir) {
+  console.log('drawing metaPerf ...');
+  const outputDir = pathToOutDir;
+  const metaPerfLogsReaders = pathToMetaPerfFiles
     .map(path => new MetaPerfLogsReader(path));
   const styles = `
 .boxoutline line {
@@ -188,10 +195,21 @@ function main(pathToConfigFile) {
   svgGraph.labelYAxis();
   svgGraph.drawYGridLines();
   writeSVGFileToDir(outputDir, 'metaPerf', svgGraph.toString());
-  console.log(`metaPerf drawn to ${configReader.getPathForSVG()}metaPerf.svg`);
+  console.log(`metaPerf drawn to ${outputDir}metaPerf.svg`);
+}
+function twoOrMoreArguments() {
+  const args = process.argv;
+  return args.length > 3;
 }
 
 if (typeof require !== 'undefined' && require.main === module) {
-  const pathToConfigFile = expectConfigFile();
-  main(pathToConfigFile);
+  if (twoOrMoreArguments()) {
+    const args = process.argv;
+    main(args.slice(2, args.length - 1), args[args.length - 1]);
+  } else {
+    const pathToConfigFile = expectConfigFile();
+    drawMetaPerfBoxPlotFromConfig(pathToConfigFile);
+  }
 }
+
+
