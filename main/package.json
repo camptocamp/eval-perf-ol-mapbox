@@ -33,8 +33,8 @@
     "mapbox-gl": "^0.44.1",
     "mkdirp": "^0.5.1",
     "moment": "^2.22.1",
-    "ol": "^5.0.3",
-    "ol-mapbox-style": "^3.0.1",
+    "ol": "^4.3.2",
+    "ol-mapbox-style": "^2.6.5",
     "selenium-webdriver": "4.0.0-alpha.1",
     "simple-statistics": "^6.0.1"
   },

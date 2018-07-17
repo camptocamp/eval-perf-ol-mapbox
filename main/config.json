@@ -4,7 +4,7 @@
   "pathToOutDirSVG": "./out/svg/",
   "renderers": ["openlayers", "mapbox"],
   "nbTrials": 50,
-  "testName": "medium style",
+  "testName": "defaultTest",
   "initialZoom": 9,
   "initialCenter": [6, 46],
   "paths": ["slowerScenario"],
