@@ -1,5 +1,9 @@
+import BrowserMob from 'browsermob-proxy-client';
+import selProxy from 'selenium-webdriver/proxy';
 import { path5sec } from './navigationPaths';
 import promiseTimeOut from './promiseTimeOut';
+import ProxyHelper from '../network/ProxyHelper';
+import { writeFileToDir } from '../filesIO/utils';
 
 const { Builder } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
@@ -22,9 +26,14 @@ class SeleniumNavigator {
     this.init();
   }
 
-  init() {
+  async init() {
+    this.defaultProxy = BrowserMob.createClient();
+    await this.defaultProxy.start();
+    await this.defaultProxy.createHar();
     this.driver = new Builder()
-      .forBrowser(this.options.browser);
+      .withCapabilities(ProxyHelper.getCapabilities(this.options.browser))
+      .setProxy(selProxy.manual(ProxyHelper.getManualProxy(this.defaultProxy.proxy.port)));
+
     if (this.options.browser === 'firefox') {
       this.driver = this.driver.setFirefoxOptions(this.options.seleniumOptions);
     }
@@ -50,6 +59,8 @@ class SeleniumNavigator {
       await this.driver.get(`http://localhost:8000/${options.rendererUsed}.html`);
       this.close();
     }
+    const har = await this.defaultProxy.getHar();
+    writeFileToDir('./', 'testHars', JSON.stringify(har));
     const logs = await this.driver.executeScript('return window.stopPerformanceRecording()');
     const version = await this.driver.executeScript('return window.getVersion()');
     return Object.assign(logs, { version });

@@ -28,6 +28,7 @@
   "homepage": "https://github.com/camptocamp/eval-perf-ol-mapbox#readme",
   "dependencies": {
     "babel-register": "^6.26.0",
+    "browsermob-proxy-client": "^0.1.0",
     "d3": "^5.1.0",
     "d3-node": "^1.1.3",
     "mapbox-gl": "^0.44.1",

@@ -10,7 +10,7 @@
   "sources": {
     "switzerland_vector": {
       "type": "vector",
-      "url": "http://localhost:8080/data/v3.json"
+      "url": "http://localhost:3000/data/v3.json"
     }
   },
   "glyphs": "https://demo.tileserver.org/fonts/{fontstack}/{range}.pbf",
