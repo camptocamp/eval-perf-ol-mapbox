@@ -85,5 +85,5 @@ The first line will launch selenium and gather metrics. The second line will com
 #### Visualizing experiments
 
 * type : ```npm run drawMetaPerf PATH\_TO\_CONFIG\_FILE``` or 
-  type : ```npm run drawMetaPerf PATHS\_TO\_METAPERF\_FILES```
+  type : ```npm run drawMetaPerf PATHS\_TO\_METAPERF\_FILES PATH\_TO\_OUTPUT\_DIR```
 * type : ```npm run drawPerfPlots PATH\_TO\_CONFIG\_FILE```

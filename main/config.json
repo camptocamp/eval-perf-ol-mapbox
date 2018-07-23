@@ -2,13 +2,13 @@
   "browser": "chrome",
   "pathToOutDir": "./out/",
   "pathToOutDirSVG": "./out/svg/",
-  "renderers": ["openlayers", "mapbox"],
+  "renderers": ["openlayers"],
   "nbTrials": 50,
-  "testName": "defaultTest",
+  "testName": "RealTestBasicJanuary2018",
   "initialZoom": 9,
   "initialCenter": [6, 46],
   "paths": ["slowerScenario"],
   "overwritePreviousTests": true,
-  "style": "styles/osm-liberty-medium.json",
-  "olTime": "july2018"
+  "style": "styles/mapbox-roads-basic.json",
+  "olTime": "january2018"
 }
