@@ -1,5 +1,5 @@
 import { metaperf } from '../sharedperformance/metaPerf';
-import { metaPerfLogsFileName, outputJSON } from './utils';
+import { metaPerfLogsFileName, outputJSON, expectConfigFile } from './utils';
 import ConfigReader from './ConfigReader';
 
 const fs = require('fs');
@@ -13,9 +13,8 @@ function writeMetaPerf(dirName) {
   }
 }
 
-function main() {
+function main(pathToConfig) {
   console.log('writing metaPerformance ...');
-  const pathToConfig = process.argv[2];
   const configReader = new ConfigReader(pathToConfig);
   configReader.getPathsToRenderersDir().forEach((dirName) => {
     writeMetaPerf(dirName);
@@ -24,6 +23,7 @@ function main() {
 }
 
 if (typeof require !== 'undefined' && require.main === module) {
-  main();
+  const pathToConfig = expectConfigFile();
+  main(pathToConfig);
 }
 

@@ -48,8 +48,18 @@ function readJSONFile(pathToFile) {
   }
 }
 
+function expectConfigFile() {
+  const args = process.argv;
+  if (args.length === 3) {
+    return args[2];
+  } else if (args.length === 2) {
+    return 'config.json';
+  }
+  throw new Error(`wrong number of argument, expected 1 or 0 arguments, got: ${args.length - 2}`);
+}
+
 export {
   outputJSON, metaPerfLogsFileName,
   getFileNamesOfLogs, writeFileToDir,
-  writeSVGFileToDir, readJSONFile,
+  writeSVGFileToDir, readJSONFile, expectConfigFile,
 };

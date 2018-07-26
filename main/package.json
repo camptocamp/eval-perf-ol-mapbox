@@ -6,12 +6,14 @@
   "scripts": {
     "build": "webpack --mode production -p",
     "dev": "webpack --mode development -d",
-    "fullProcess": "npm run launchExperiment ./config.json && npm run writeMetaPerf ./config.json && npm run drawPerfPlots ./config.json && npm run drawMetaPerf ./config.json",
+    "fullProcess": "node --require babel-register ./src/bashcommands/runFullProcess.js",
+    "checkOlVersion": "node --require babel-register ./src/bashcommands/checkOlVersion.js",
     "drawMetaPerf": "node --require babel-register ./src/visualization/metaPerfBoxPlot.js",
     "drawPerfPlots": "node --require babel-register ./src/filesIO/logsToSVG.js",
     "writeMetaPerf": "node --require babel-register ./src/filesIO/metaPerfWriter.js",
     "launchExperiment": "node --require babel-register ./src/launch/main.js",
-    "start": "webpack-dev-server --mode development -d --open",
+    "start": "webpack-dev-server --config webpack.config.ol5.js --mode development -d --open",
+    "startOl4": "webpack-dev-server --config webpack.config.ol4.js --mode development -d --open",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -31,8 +33,8 @@
     "mapbox-gl": "^0.44.1",
     "mkdirp": "^0.5.1",
     "moment": "^2.22.1",
-    "ol": "5.0.0-beta.14",
-    "ol-mapbox-style": "3.0.0-beta.9",
+    "ol": "^4.6.4",
+    "ol-mapbox-style": "^2.10.1",
     "selenium-webdriver": "4.0.0-alpha.1",
     "simple-statistics": "^6.0.1"
   },

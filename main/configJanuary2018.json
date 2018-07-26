@@ -4,11 +4,11 @@
   "pathToOutDirSVG": "./out/svg/",
   "renderers": ["openlayers"],
   "nbTrials": 50,
-  "testName": "RealTestBasicJanuary2018",
+  "testName": "RealTestJanuary-slow",
   "initialZoom": 9,
   "initialCenter": [6, 46],
   "paths": ["slowerScenario"],
   "overwritePreviousTests": true,
-  "style": "styles/mapbox-roads-basic.json",
+  "style": "styles/osm-liberty-medium.json",
   "olTime": "january2018"
 }

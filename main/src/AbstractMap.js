@@ -5,7 +5,7 @@
 export default class AbstractMap {
   constructor(){
   }
-  applyStyle() {
+  async applyStyle() {
   }
   setZoom() {
   }
@@ -18,5 +18,7 @@ export default class AbstractMap {
   zoomIn(){
   }
   zoomOut(){
+  }
+  getVersion(){
   }
 }

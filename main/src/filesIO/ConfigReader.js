@@ -77,4 +77,7 @@ export default class ConfigReader {
   toJSON() {
     return Object.assign({}, this.config);
   }
+  getOlTime() {
+    return this.config.olTime;
+  }
 }

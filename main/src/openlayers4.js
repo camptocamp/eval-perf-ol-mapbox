@@ -1,11 +1,15 @@
 import { apply } from 'ol-mapbox-style';
-import CanvasMap from 'ol/Map';
-import { linear } from 'ol/easing';
-import { VERSION } from 'ol/index';
-import View from 'ol/View';
-import { fromLonLat } from 'ol/proj';
+import CanvasMap from 'ol/map';
+import easing from 'ol/easing';
+import index from 'ol/index';
+import View from 'ol/view';
+import proj from 'ol/proj';
 import init from './shared-init';
 import AbstractMap from './AbstractMap';
+
+const { linear } = easing;
+const { fromLonLat } = proj;
+const { VERSION } = index;
 
 class InstrumentedCanvasMap extends CanvasMap {
   renderFrame_(time) {
@@ -40,7 +44,11 @@ class OpenLayersMap extends AbstractMap {
     }));
   }
   async setStyle(stylePath) {
-    apply(this.map, stylePath);
+    const style = await fetch(stylePath);
+    const styleObject = await style.json();
+    const styleObjectWithFakeCenterAndZoom =
+      Object.assign(styleObject, { center: [0, 0], zoom: 3 });
+    apply(this.map, styleObjectWithFakeCenterAndZoom);
   }
   drag(xPixels, yPixels, duration) {
     const view = this.map.getView();

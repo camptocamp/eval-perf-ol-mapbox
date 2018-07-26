@@ -1,0 +1,14 @@
+{
+  "july2018": {
+    "ol-mapbox-style": "3.0.1",
+    "ol": "5.0.3"
+  },
+  "january2018": {
+    "ol-mapbox-style": "2.10.1",
+    "ol": "4.6.4"
+  },
+  "september2017": {
+    "ol-mapbox-style": "2.6.5",
+    "ol": "4.3.2"
+  }
+}

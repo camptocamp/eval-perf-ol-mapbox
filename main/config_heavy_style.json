@@ -1,0 +1,13 @@
+{
+  "browser": "chrome",
+  "pathToOutDir": "./out/",
+  "pathToOutDirSVG": "./out/svg/",
+  "renderers": ["openlayers4", "mapbox"],
+  "nbTrials": 2,
+  "testName": "heavy style",
+  "initialZoom": 9,
+  "initialCenter": [6, 46],
+  "paths": ["path5sec"],
+  "overwritePreviousTests": true,
+  "style": "styles/osm-liberty-custom.json"
+}

@@ -1,6 +1,9 @@
-import { MetaPerfLogsReader } from '../filesIO/metaPerfLogsReader';
-import { BoxPlot } from './BoxPlot';
-import { writeSVGFileToDir } from '../filesIO/utils';
+import {MetaPerfLogsReader,} from '../filesIO/metaPerfLogsReader';
+import {BoxPlot,} from './BoxPlot';
+import {
+  writeSVGFileToDir,
+  expectConfigFile,
+} from '../filesIO/utils';
 import ConfigReader from '../filesIO/ConfigReader';
 
 const d3 = require('d3');
@@ -14,7 +17,7 @@ function sIfPlural(number) {
 }
 
 function getLegend(metaPerfLogsReader) {
-  return [`${metaPerfLogsReader.getRenderer()}`,
+  return [`${metaPerfLogsReader.getRenderer()} ${metaPerfLogsReader.getVersion()}`,
     `sample size = ${metaPerfLogsReader.getSampleSize()}`,
     `${metaPerfLogsReader.getOutliers()} outlier${sIfPlural(metaPerfLogsReader.getOutliers())} filtered out`,
   ];
@@ -146,12 +149,15 @@ class MetaPerfBoxPlot {
   }
 }
 
-function main() {
+function drawMetaPerfBoxPlotFromConfig(pathToConfigFile) {
+  const configReader = new ConfigReader(pathToConfigFile);
+  main(configReader.getPathsToMetaPerfFiles(), configReader.getPathForSVG());
+}
+
+function main(pathToMetaPerfFiles, pathToOutDir) {
   console.log('drawing metaPerf ...');
-  const configFile = process.argv[2];
-  const configReader = new ConfigReader(configFile);
-  const outputDir = configReader.getPathForSVG();
-  const metaPerfLogsReaders = configReader.getPathsToMetaPerfFiles()
+  const outputDir = pathToOutDir;
+  const metaPerfLogsReaders = pathToMetaPerfFiles
     .map(path => new MetaPerfLogsReader(path));
   const styles = `
 .boxoutline line {
@@ -189,8 +195,21 @@ function main() {
   svgGraph.labelYAxis();
   svgGraph.drawYGridLines();
   writeSVGFileToDir(outputDir, 'metaPerf', svgGraph.toString());
-  console.log(`metaPerf drawn to ${configReader.getPathForSVG()}metaPerf.svg`);
+  console.log(`metaPerf drawn to ${outputDir}metaPerf.svg`);
 }
+function twoOrMoreArguments() {
+  const args = process.argv;
+  return args.length > 3;
+}
+
 if (typeof require !== 'undefined' && require.main === module) {
-  main();
+  if (twoOrMoreArguments()) {
+    const args = process.argv;
+    main(args.slice(2, args.length - 1), args[args.length - 1]);
+  } else {
+    const pathToConfigFile = expectConfigFile();
+    drawMetaPerfBoxPlotFromConfig(pathToConfigFile);
+  }
 }
+
+

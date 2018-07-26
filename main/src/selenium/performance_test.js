@@ -50,7 +50,9 @@ class SeleniumNavigator {
       await this.driver.get(`http://localhost:8000/${options.rendererUsed}.html`);
       this.close();
     }
-    return this.driver.executeScript('return window.stopPerformanceRecording()');
+    const logs = await this.driver.executeScript('return window.stopPerformanceRecording()');
+    const version = await this.driver.executeScript('return window.getVersion()');
+    return Object.assign(logs, { version });
   }
   close() {
     this.driver.close();
