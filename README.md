@@ -78,12 +78,12 @@ If you want to have multiple config files for different tasks you can do it the 
 * If running ol version 4.x.x, type: ```npm run startOl4```
 #### Gather metrics
 
-* in a terminal go to _main_ subfolder and type : ```npm run launchExperiment PATH\_TO\_CONFIG\_FILE```
-* type : ```npm run writeMetaPerf PATH\_TO\_CONFIG\_FILE```:
+* in a terminal go to _main_ subfolder and type : ```npm run launchExperiment PATH_TO_CONFIG_FILE```
+* type : ```npm run writeMetaPerf PATH_TO_CONFIG_FILE```:
 The first line will launch selenium and gather metrics. The second line will compute statistics for the files.
 
 #### Visualizing experiments
 
-* type : ```npm run drawMetaPerf PATH\_TO\_CONFIG\_FILE``` or 
-  type : ```npm run drawMetaPerf PATHS\_TO\_METAPERF\_FILES PATH\_TO\_OUTPUT\_DIR```
-* type : ```npm run drawPerfPlots PATH\_TO\_CONFIG\_FILE```
+* type : ```npm run drawMetaPerf PATH_TO_CONFIG_FILE``` or 
+  type : ```npm run drawMetaPerf PATHS_TO_METAPERF_FILES PATH_TO_OUTPUT_DIR```
+* type : ```npm run drawPerfPlots PATH_TO_CONFIG_FILE```
