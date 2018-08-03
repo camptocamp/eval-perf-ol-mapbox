@@ -43,7 +43,11 @@ class OpenLayersMap extends AbstractMap {
       zoom,
     }));
   }
-  async setStyle(stylePath) {
+  async setStyle(stylePath, olTime) {
+    if (olTime === 'june2017') {
+      apply(this.map, stylePath);
+      return;
+    }
     const style = await fetch(stylePath);
     const styleObject = await style.json();
     const styleObjectWithFakeCenterAndZoom =

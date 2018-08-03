@@ -10,5 +10,9 @@
   "september2017": {
     "ol-mapbox-style": "2.6.5",
     "ol": "4.3.2"
+  },
+  "june2017": {
+    "ol-mapbox-style": "2.5.0",
+    "ol": "4.2.0"
   }
 }
