@@ -90,6 +90,10 @@ The first line will launch selenium and gather metrics. The second line will com
 
 * type : ```npm run drawMetaPerf PATH_TO_CONFIG_FILE``` or 
   type : ```npm run drawMetaPerf PATHS_TO_METAPERF_FILES PATH_TO_OUTPUT_DIR```
+  It is possible to add the following options
+  * minY=... : specify the min Y value (30 is a good value)
+  * maxY=... : specify tha max Y value (60 is good)
+  * mode=minimized : removes margin and legends
 * type : ```npm run drawPerfPlots PATH_TO_CONFIG_FILE```
 
 ## Technical

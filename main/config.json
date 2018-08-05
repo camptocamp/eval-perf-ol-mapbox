@@ -9,6 +9,6 @@
   "initialCenter": [6, 46],
   "paths": ["path5sec"],
   "overwritePreviousTests": true,
-  "style": "styles/osm-liberty-mediumFAKE.json",
+  "style": "styles/mapbox-roads-basicFAKE.json",
   "olTime": "june2017"
 }
