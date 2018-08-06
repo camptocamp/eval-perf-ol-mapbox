@@ -1,4 +1,4 @@
-import { path5sec, slowerScenario } from '../selenium/navigationPaths';
+import { path5sec, slowerScenario, noZoom } from '../selenium/navigationPaths';
 import { readJSONFile, metaPerfLogsFileName } from './utils';
 
 const pathUtils = require('path');
@@ -9,6 +9,8 @@ function pathStringToFunction(navigationPath) {
       return path5sec;
     case 'slowerScenario':
       return slowerScenario;
+    case 'noZoom':
+      return noZoom;
     default:
       throw new Error(`${navigationPath} is not a valid function name for a navigation path`);
   }

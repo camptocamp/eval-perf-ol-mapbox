@@ -190,7 +190,7 @@ function main(pathToMetaPerfFiles, pathToOutDir, minY, maxY, mode) {
   if (mode === 'minimized') {
     margin.top = 20;
     margin.left = 30;
-    margin.right = 20;
+    margin.right = 0;
     margin.bottom = 0;
   }
   const svgWidth = 960;

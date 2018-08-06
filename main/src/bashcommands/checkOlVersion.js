@@ -12,6 +12,9 @@ function removeCarets(string) {
 }
 
 function getOlVersion(packageLockJSONContent) {
+  if (packageLockJSONContent.dependencies[olPackageName] === undefined) {
+    return undefined;
+  }
   const tempVersion = packageLockJSONContent.dependencies[olPackageName].version;
   if (tempVersion === undefined) {
     return undefined;
@@ -29,7 +32,7 @@ function getOlMapboxStyleVersion(packageLockJSONContent) {
 
 async function npmInstall(packageName, version) {
   console.log(`installing ${packageName}@${version}`);
-  execCommandInBash(`npm install ${packageName}@${version}`);
+  await execCommandInBash(`npm install ${packageName}@${version}`);
 }
 
 async function npmUninstall(packageName) {
