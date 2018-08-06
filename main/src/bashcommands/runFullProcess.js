@@ -23,8 +23,8 @@ async function runFullProcess(configPath) {
   } else {
     throw new Error(`major version of ol: ${majorVersionOfOl} not supported`);
   }
-  console.log('waiting 10 server for the server to start...');
-  await sleep(10000);
+  console.log('waiting 5 seconds for the server to start...');
+  await sleep(5000);
   await execCommandInBash(`npm run launchExperiment ${configPath}`);
   await execCommandInBash(`npm run writeMetaPerf ${configPath}`);
   await execCommandInBash(`npm run drawPerfPlots ${configPath}`);
