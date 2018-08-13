@@ -4,11 +4,11 @@
   "pathToOutDirSVG": "./out/svg/",
   "renderers": ["openlayers"],
   "nbTrials": 50,
-  "testName": "defaultTest",
+  "testName": "RealTestMedium5secSeptember2017",
   "initialZoom": 9,
   "initialCenter": [6, 46],
   "paths": ["path5sec"],
   "overwritePreviousTests": true,
-  "style": "styles/osm-liberty-custom.json",
-  "olTime": "july2018"
+  "style": "styles/osm-liberty-mediumFAKE.json",
+  "olTime": "september2017"
 }
