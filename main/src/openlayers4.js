@@ -4,7 +4,7 @@ import easing from 'ol/easing';
 import index from 'ol/index';
 import View from 'ol/view';
 import proj from 'ol/proj';
-import init from './shared-init';
+import { init, addPerformanceRecorderToMap } from './shared-init';
 import AbstractMap from './AbstractMap';
 
 const { linear } = easing;
@@ -58,6 +58,7 @@ class OpenLayersMap extends AbstractMap {
     const view = this.map.getView();
     const pixelCenter = this.map.getPixelFromCoordinate(view.getCenter());
     const newCenter = [pixelCenter[0] + xPixels, pixelCenter[1] + yPixels];
+    this.performanceRecorder.addDragEvent(duration);
     view.animate({
       center: this.map.getCoordinateFromPixel(newCenter),
       duration,
@@ -66,10 +67,12 @@ class OpenLayersMap extends AbstractMap {
   }
   zoomIn(duration) {
     const view = this.map.getView();
+    this.performanceRecorder.addZoomEvent(duration);
     view.animate({ zoom: view.getZoom() + 1, duration, easing: linear });
   }
   zoomOut(duration) {
     const view = this.map.getView();
+    this.performanceRecorder.addZoomEvent(duration);
     view.animate({ zoom: view.getZoom() - 1, duration, easing: linear });
   }
   getVersion() {
@@ -81,4 +84,5 @@ const map = new InstrumentedCanvasMap({
   target: 'map',
 });
 const olMap = new OpenLayersMap(map);
+addPerformanceRecorderToMap(olMap);
 init(olMap);
