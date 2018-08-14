@@ -42,12 +42,14 @@ class LogsReader {
 
   getDragEvents() {
     this.checkIfUndefined();
-    return this.logsObject.eventLogs.dragEvents;
+    return this.logsObject.dragEvents
+      .map(object => convertObjectWithStringToObjectWithFloat(object));
   }
 
-  getDoubleClickTimes() {
+  getZoomEvents() {
     this.checkIfUndefined();
-    return convertStringArrayToFloatList(this.logsObject.eventLogs.doubleClickTimes);
+    return this.logsObject.zoomEvents
+      .map(object => convertObjectWithStringToObjectWithFloat(object));
   }
 
   getRenderTimes() {
@@ -55,20 +57,8 @@ class LogsReader {
     if (this.logsObject.renderTimes === undefined) {
       return [];
     }
-    return this.logsObject.renderTimes.map(object => convertObjectWithStringToObjectWithFloat(object));
-  }
-
-  getStartAndEndOfDragEvents() {
-    const dragEvents = this.getDragEvents();
-    const filteredDragEvents = dragEvents.filter(dragEvent => (dragEvent.timeStampsOfMoves.length >= 2));
-    const finalArray = filteredDragEvents.map((dragEvent) => {
-      const object = createDragEventObject(
-        parseFloat(dragEvent.timeStampsOfMoves[0]),
-        parseFloat(dragEvent.timeStampsOfMoves[dragEvent.timeStampsOfMoves.length - 1]),
-      );
-      return object;
-    });
-    return finalArray;
+    return this.logsObject.renderTimes
+      .map(object => convertObjectWithStringToObjectWithFloat(object));
   }
 
   getTimeBetweenFrames() {

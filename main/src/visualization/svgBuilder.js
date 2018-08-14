@@ -13,7 +13,6 @@ module.exports = class SVGBuilder {
 
   init(options) {
     this.DRAG_EVENTS_HEIGHT = 12;
-    this.DOUBLE_CLICKS_HEIGHT = 5;
     this.RENDER_RECT_HEIGHT = 20;
     this.AXIS_LABELING_OFFSET = 20;
     this.d3n = new D3Node(options);
@@ -100,15 +99,16 @@ module.exports = class SVGBuilder {
       .attr('text-anchor', 'middle')
       .text((d, i) => `DragEvent${i}`);
   }
-  drawDblClicks(doubleClickTimes) {
-    this.dblClickEventsSVG = this.svgWithMargin.selectAll('.zoom')
-      .data(doubleClickTimes)
+  drawZoomEventsRects(zoomEvents) {
+    this.zoomEventsSVG = this.svgWithMargin.selectAll('.zoom')
+      .data(zoomEvents)
       .enter().append('g')
       .attr('class', 'zoom')
-      .attr('transform', d => `translate(${this.xScale(d)},${this.height + 1 + this.DOUBLE_CLICKS_HEIGHT})`);
+      .attr('transform', d => `translate(${this.xScale(d.start)},${this.height + 1})`);
 
-    this.dblClickEventsSVG.append('circle')
-      .attr('r', this.DOUBLE_CLICKS_HEIGHT);
+    this.zoomEventsSVG.append('rect')
+      .attr('width', d => this.xScale(d.end) - this.xScale(d.start))
+      .attr('height', () => this.DRAG_EVENTS_HEIGHT);
   }
   drawRenderRects(renderTimes) {
     this.renderSVG = this.svgWithMargin.selectAll('.render')
@@ -153,7 +153,7 @@ module.exports = class SVGBuilder {
     const legendItems = [
       { className: 'render', text: 'render time' },
       { className: 'drag', text: 'drag events' },
-      { className: 'zoom', text: 'double click events (zoom)' },
+      { className: 'zoom', text: 'zoom events' },
       { className: 'bar', text: 'frames' },
     ];
     const legend = this.svg.selectAll('.legend')

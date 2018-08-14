@@ -7,6 +7,9 @@ export default class AbstractMap {
   }
   async applyStyle() {
   }
+  addRecorder(performanceRecorder) {
+    this.performanceRecorder = performanceRecorder;
+  }
   setZoom() {
   }
   setCenter() {

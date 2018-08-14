@@ -18,9 +18,6 @@ const styles = `
   fill: #000;
   font: 10px sans-serif;
 }
-.zoom circle {
-  fill: red
-}
 .zoom rect {
   fill: red;
 }
@@ -42,8 +39,8 @@ function SVGFromLogs(path) {
   const frameTimes = reader.getFrameTimes();
   const instantFPS = reader.getInstantFPS();
   const timeBetweenFrames = reader.getTimeBetweenFrames();
-  const dragEvents = reader.getStartAndEndOfDragEvents();
-  const doubleClickTimes = reader.getDoubleClickTimes();
+  const dragEvents = reader.getDragEvents();
+  const zoomEvents = reader.getZoomEvents();
   const renderTimes = reader.getRenderTimes();
 
   const margin = {
@@ -61,14 +58,14 @@ function SVGFromLogs(path) {
   const svgBuilderObj = new SVGBuilder(svgWidth, svgHeight, margin, labelMargin, legendMargin, options);
   svgBuilderObj.initXScale(frameTimes[0] - timeBetweenFrames[0], frameTimes[frameTimes.length - 1]);
   // TODO change this when first frame bug is fixed
-  svgBuilderObj.initYScale(0, 150);
+  svgBuilderObj.initYScale(0, 100);
   svgBuilderObj.initSVG();
   svgBuilderObj.initSVGWithMargin();
   svgBuilderObj.drawXAxis();
   svgBuilderObj.drawYAxis();
   svgBuilderObj.drawFPS(frameTimes, timeBetweenFrames, instantFPS);
   svgBuilderObj.drawDragEventsRects(dragEvents);
-  svgBuilderObj.drawDblClicks(doubleClickTimes);
+  svgBuilderObj.drawZoomEventsRects(zoomEvents);
   svgBuilderObj.drawRenderRects(renderTimes);
   // svgBuilderObj.drawDragEventsText(dragEvents);
   svgBuilderObj.labelXAxis();
