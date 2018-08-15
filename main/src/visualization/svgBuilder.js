@@ -12,9 +12,10 @@ module.exports = class SVGBuilder {
   }
 
   init(options) {
-    this.DRAG_EVENTS_HEIGHT = 12;
+    this.DRAG_EVENTS_HEIGHT = 15;
     this.RENDER_RECT_HEIGHT = 20;
-    this.AXIS_LABELING_OFFSET = 20;
+    this.AXIS_LABELING_OFFSET = 40;
+    this.DISTANCE_BETWEEN_TICK_TEXT_AND_VERTICAL_BARS = 20;
     this.d3n = new D3Node(options);
     this.width = this.totalWidth - this.labelMargin.left - this.margin.left - this.margin.right;
     this.height = this.totalHeight - this.labelMargin.bottom - this.margin.top - this.margin.bottom;
@@ -48,7 +49,7 @@ module.exports = class SVGBuilder {
           this.height + this.margin.top + this.AXIS_LABELING_OFFSET + 30})`,
       )
       .style('text-anchor', 'middle')
-      .text('time since Origin in ms');
+      .text('Time since origin in ms');
   }
   labelYAxis() {
     this.svg.append('text')
@@ -136,7 +137,7 @@ module.exports = class SVGBuilder {
     const test = this.svgWithMargin.select('.axis--x');
     test.selectAll('.tick')
       .selectAll('line')
-      .attr('y2', this.AXIS_LABELING_OFFSET - 3);
+      .attr('y2', this.AXIS_LABELING_OFFSET - this.DISTANCE_BETWEEN_TICK_TEXT_AND_VERTICAL_BARS);
     test.selectAll('.tick')
       .selectAll('text')
       .attr('y', this.AXIS_LABELING_OFFSET);
@@ -144,9 +145,9 @@ module.exports = class SVGBuilder {
   drawLegend() {
     const rectLegendWidth = 20;
     const rectLegendHeight = 15;
-    const SPACING_INTER_LEGEND = 160;
+    const SPACING_INTER_LEGEND = 220;
     const SPACING_INTRA_LEGEND = 30;
-    const LEGEND_TEXT_OFFSET = 10;
+    const LEGEND_TEXT_OFFSET = 15;
     const MARGIN_TOP_OFFSET = 10;
     const totalHeightOffset = this.height + this.labelMargin.bottom +
     this.margin.top + MARGIN_TOP_OFFSET;

@@ -47,7 +47,7 @@ function SVGFromLogs(path) {
     top: 10, right: 30, bottom: 30, left: 60,
   };
   const labelMargin = {
-    left: 30, bottom: 60,
+    left: 30, bottom: 100,
   };
   const legendMargin = {
     bottom: 0,
