@@ -35,6 +35,7 @@ class MetaPerfLogsReader {
     this.checkIfUndefined();
     this.varianceFPSBoxPlot = new BoxPlotLogs(this.metaPerfObject.varianceFPSBoxPlot);
     this.meanFPSBoxPlot = new BoxPlotLogs(this.metaPerfObject.meanFPSBoxPlot);
+    this.maxRenderBoxPlot = new BoxPlotLogs(this.metaPerfObject.maxRenderBoxPlot);
   }
   checkIfUndefined() {
     if (this.metaPerfObject === undefined) {
@@ -64,7 +65,7 @@ class MetaPerfLogsReader {
     return this.metaPerfObject.version;
   }
   getMaxRenderBoxPlotLogs() {
-    return this.metaPerfObject.maxRenderBoxPlot;
+    return this.maxRenderBoxPlot;
   }
 }
 

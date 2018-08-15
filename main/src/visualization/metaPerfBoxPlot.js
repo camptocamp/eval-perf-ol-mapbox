@@ -50,9 +50,13 @@ class MetaPerfBoxPlot {
     this.maxY = parseInt(optionsParams.maxY, 10);
     this.columns = parseInt(optionsParams.columns, 10);
     if (optionsParams.yAxis === 'maxRenderTime') {
-      this.boxPlotsLogs = metaPerfLogsReaders.map(metaPerfLogsReader => metaPerfLogsReader.getMaxRenderBoxPlot());
+      this.boxPlotsLogs = metaPerfLogsReaders
+        .map(metaPerfLogsReader => metaPerfLogsReader.getMaxRenderBoxPlotLogs());
+      this.YAxisText = 'Maximum time spent rendering in a frame (in ms)';
     } else {
-      this.boxPlotsLogs = metaPerfLogsReaders.map(metaPerfLogsReader => metaPerfLogsReader.getMeanFPSBoxPlotLogs());
+      this.boxPlotsLogs = metaPerfLogsReaders
+        .map(metaPerfLogsReader => metaPerfLogsReader.getMeanFPSBoxPlotLogs());
+      this.YAxisText = 'average FPS in an experiment';
     }
     this.init();
   }
@@ -187,7 +191,7 @@ class MetaPerfBoxPlot {
       .attr('x', 0 - (this.height / 2))
       .attr('dy', '1em')
       .style('text-anchor', 'middle')
-      .text('average FPS in an experiment');
+      .text(this.YAxisText);
   }
   drawYGridLines() {
     this.svgWithMargin.append('g')
@@ -293,7 +297,7 @@ function processColumns(args) {
 }
 
 function processYAxis(args) {
-  processArg(args, 'yAxis=');
+  return processArg(args, 'yAxis=');
 }
 
 if (typeof require !== 'undefined' && require.main === module) {
