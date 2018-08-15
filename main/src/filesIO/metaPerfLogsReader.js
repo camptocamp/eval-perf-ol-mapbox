@@ -63,6 +63,9 @@ class MetaPerfLogsReader {
   getVersion() {
     return this.metaPerfObject.version;
   }
+  getMaxRenderBoxPlotLogs() {
+    return this.metaPerfObject.maxRenderBoxPlot;
+  }
 }
 
 export { MetaPerfLogsReader, BoxPlotLogs };

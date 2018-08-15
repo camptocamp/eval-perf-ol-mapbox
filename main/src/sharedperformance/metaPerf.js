@@ -57,6 +57,7 @@ function getVersion(logsReaders) {
 function metaperf(pathToDir) {
   const files = getFileNamesOfLogs(pathToDir);
   const logsReaders = files.map(name => new LogsReader(`${pathToDir}${name}`));
+  const maxRenderArray = logsReaders.map(logsReader => logsReader.getMaxRenderTime());
   const FPSArray = logsReaders.map(logsReader => logsReader.getInstantFPS());
   const meanFPSArray = logsReaders.map(logsReader => getMeanFPS(logsReader));
   const FPSVariances = FPSArray.map(instantFPS => ss.variance(instantFPS));
@@ -71,6 +72,7 @@ function metaperf(pathToDir) {
   const meanFPSBoxPlot = computeBoxPlotStats(meanFPSArrayRelevant);
   const sampleSize = files.length;
   const outliers = sampleSize - meanFPSArrayRelevant.length;
+  const maxRenderBoxPlot = computeBoxPlotStats(maxRenderArray);
   const version = logsReaders[0].getVersion();
   return {
     meanFPSArray,
@@ -82,6 +84,7 @@ function metaperf(pathToDir) {
     meanFPSBoxPlot,
     outliers,
     version,
+    maxRenderBoxPlot,
   };
 }
 

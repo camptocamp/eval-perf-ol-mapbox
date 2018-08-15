@@ -16,6 +16,9 @@ function convertStringArrayToFloatList(strArray) {
   return strArray.map(string => parseFloat(string));
 }
 
+function arrayMax(arr) {
+  return arr.reduce((p, v) => (p > v ? p : v));
+}
 
 class LogsReader {
   constructor(path) {
@@ -64,6 +67,12 @@ class LogsReader {
   getTimeBetweenFrames() {
     this.checkIfUndefined();
     return convertStringArrayToFloatList(this.logsObject.timeBetweenFrames);
+  }
+
+  getMaxRenderTime() {
+    const renderTimes = this.getRenderTimes();
+    const renderDuration = renderTimes.map(renderTime => renderTime.afterRender - renderTime.beforeRender);
+    return arrayMax(renderDuration);
   }
 }
 
