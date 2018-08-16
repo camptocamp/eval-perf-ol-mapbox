@@ -17,8 +17,6 @@ async function init(abstractMapImplementation) {
   await abstractMapImplementation.setStyle(configReader.getStyle(), configReader.getOlTime());
   abstractMapImplementation.setZoom(configReader.getZoom());
   abstractMapImplementation.setCenter(configReader.getCenter());
-  //window.setTimeout(() => abstractMapImplementation.setZoom(configReader.getZoom()), 200);
-  //window.setTimeout(() => abstractMapImplementation.setCenter(configReader.getCenter()), 200);
   window.map = abstractMapImplementation;
 }
 function addPerformanceRecorderToMap(abstractMapImplementation) {
