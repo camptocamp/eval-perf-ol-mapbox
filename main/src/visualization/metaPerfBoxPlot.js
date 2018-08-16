@@ -235,8 +235,8 @@ function main(pathToMetaPerfFiles, pathToOutDir, optionsParams) {
     left: 60,
   };
   if (mode === 'minimized') {
-    margin.top = 20;
-    margin.left = 30;
+    margin.top = 23;
+    margin.left = 65;
     margin.right = 0;
     margin.bottom = 20;
   }

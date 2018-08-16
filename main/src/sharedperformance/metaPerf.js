@@ -72,7 +72,12 @@ function metaperf(pathToDir) {
   const meanFPSBoxPlot = computeBoxPlotStats(meanFPSArrayRelevant);
   const sampleSize = files.length;
   const outliers = sampleSize - meanFPSArrayRelevant.length;
-  const maxRenderBoxPlot = computeBoxPlotStats(maxRenderArray);
+  const maxRenderBoxPlotWithOutliers = computeBoxPlotStats(maxRenderArray);
+  const maxRenderBoxPlot = computeBoxPlotStats(maxRenderArray.filter(maxRender => !isOutlier(
+    maxRenderBoxPlotWithOutliers.firstQuartile,
+    maxRenderBoxPlotWithOutliers.thirdQuartile,
+    maxRender,
+  )));
   const version = logsReaders[0].getVersion();
   return {
     meanFPSArray,
