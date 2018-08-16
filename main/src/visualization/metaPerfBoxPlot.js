@@ -1,5 +1,5 @@
-import {MetaPerfLogsReader,} from '../filesIO/metaPerfLogsReader';
-import {BoxPlot,} from './BoxPlot';
+import { MetaPerfLogsReader } from '../filesIO/metaPerfLogsReader';
+import { BoxPlot } from './BoxPlot';
 import {
   writeSVGFileToDir,
   expectConfigFile,
@@ -9,12 +9,28 @@ import ConfigReader from '../filesIO/ConfigReader';
 const d3 = require('d3');
 const D3Node = require('d3-node');
 
+const fontSize = '14px';
+
 function sIfPlural(number) {
   if (number > 1 || number < -1) {
     return 's';
   }
   return '';
 }
+
+function colName(n) {
+  const ordA = 'a'.charCodeAt(0);
+  const ordZ = 'z'.charCodeAt(0);
+  const len = (ordZ - ordA) + 1;
+
+  let s = '';
+  while (n >= 0) {
+    s = String.fromCharCode((n % len) + ordA) + s;
+    n = Math.floor(n / len) - 1;
+  }
+  return s.toUpperCase();
+}
+
 
 function getLegend(metaPerfLogsReader) {
   return [`${metaPerfLogsReader.getRenderer()} ${metaPerfLogsReader.getVersion()}`,
@@ -24,15 +40,21 @@ function getLegend(metaPerfLogsReader) {
 }
 
 class MetaPerfBoxPlot {
-  constructor(svgWidth, svgHeight, margin, options, metaPerfLogsReaders) {
+  constructor(svgWidth, svgHeight, margin, options, metaPerfLogsReaders, minY, maxY, columns) {
     this.svgWidth = svgWidth;
     this.svgHeight = svgHeight;
     this.margin = margin;
     this.options = options;
     this.metaPerfLogsReaders = metaPerfLogsReaders;
+    this.minY = parseInt(minY, 10);
+    this.maxY = parseInt(maxY, 10);
+    this.columns = parseInt(columns, 10);
     this.init();
   }
   getMinYValue() {
+    if (!Number.isNaN(this.minY)) {
+      return this.minY;
+    }
     let min = Infinity;
     this.metaPerfLogsReaders.forEach((metaPerfLogsReader) => {
       const value = metaPerfLogsReader.getMeanFPSBoxPlotLogs().getMinimum();
@@ -43,6 +65,9 @@ class MetaPerfBoxPlot {
     return min;
   }
   getMaxYValue() {
+    if (!Number.isNaN(this.maxY)) {
+      return this.maxY;
+    }
     let max = -Infinity;
     this.metaPerfLogsReaders.forEach((metaPerfLogsReader) => {
       const value = metaPerfLogsReader.getMeanFPSBoxPlotLogs().getMaximum();
@@ -66,15 +91,24 @@ class MetaPerfBoxPlot {
   }
   xDomain() {
     const domain = [];
-    this.metaPerfLogsReaders.forEach((element, index) => {
-      domain.push(index);
-    });
+    if (Number.isNaN(this.columns)) {
+      this.metaPerfLogsReaders.forEach((element, index) => {
+        domain.push(index);
+      });
+      this.columns = this.metaPerfLogsReaders.length;
+      this.nbEmptyColumns = 0;
+    } else {
+      for (let index = 0; index < this.columns; index += 1) {
+        domain.push(index);
+      }
+      this.nbEmptyColumns = this.columns - this.metaPerfLogsReaders.length;
+    }
     return domain;
   }
   xRange() {
     const range = [];
-    this.metaPerfLogsReaders.forEach((element, index) => {
-      range.push(this.width * ((index + 1) / (this.metaPerfLogsReaders.length + 1)));
+    this.xDomain().forEach((element, index) => {
+      range.push(this.width * ((index + 1) / (this.xDomain().length + 1)));
     });
     return range;
   }
@@ -84,7 +118,6 @@ class MetaPerfBoxPlot {
       .ticks(5);
   }
   initXScale() {
-    // TODO change this hardcode
     this.xScale = d3.scaleOrdinal()
       .domain(this.xDomain())
       .range(this.xRange());
@@ -101,7 +134,7 @@ class MetaPerfBoxPlot {
   }
   drawBoxPlots() {
     this.metaPerfLogsReaders.forEach((element, index) => {
-      this.drawBoxPlot(this.xScale(index), element);
+      this.drawBoxPlot(this.xScale(this.nbEmptyColumns + index), element);
     });
   }
   drawBoxPlot(offset, metaPerfLogsReader) {
@@ -125,8 +158,22 @@ class MetaPerfBoxPlot {
         .attr('class', 'legend')
         .text(d => getLegend(d)[index])
         .attr('transform', `translate(0,${index * 18})`)
+        .attr('font-size', fontSize)
         .style('text-anchor', 'middle');
     }
+  }
+  labelXAxisMinimized() {
+    const legends = this.svg.selectAll('.legend')
+      .data(this.xDomain())
+      .enter().append('g')
+      .attr('transform', (d, i) => `translate(${this.xScale(i) + this.margin.left} ,${
+        this.height + this.margin.top + 20})`);
+    legends.append('text')
+      .attr('class', 'legend')
+      .text(d => colName(d))
+      .attr('transform', 'translate(0, 10)')
+      .attr('font-size', fontSize)
+      .style('text-anchor', 'middle');
   }
   labelYAxis() {
     this.svg.append('text')
@@ -149,12 +196,7 @@ class MetaPerfBoxPlot {
   }
 }
 
-function drawMetaPerfBoxPlotFromConfig(pathToConfigFile) {
-  const configReader = new ConfigReader(pathToConfigFile);
-  main(configReader.getPathsToMetaPerfFiles(), configReader.getPathForSVG());
-}
-
-function main(pathToMetaPerfFiles, pathToOutDir) {
+function main(pathToMetaPerfFiles, pathToOutDir, minY, maxY, mode, columns) {
   console.log('drawing metaPerf ...');
   const outputDir = pathToOutDir;
   const metaPerfLogsReaders = pathToMetaPerfFiles
@@ -182,34 +224,78 @@ function main(pathToMetaPerfFiles, pathToOutDir) {
     bottom: 60,
     left: 60,
   };
+  if (mode === 'minimized') {
+    margin.top = 20;
+    margin.left = 30;
+    margin.right = 0;
+    margin.bottom = 20;
+  }
   const svgWidth = 960;
   const svgHeight = 500;
   const options = {
     svgStyles: styles,
     d3Module: d3,
   };
-  const svgGraph = new MetaPerfBoxPlot(svgWidth, svgHeight, margin, options, metaPerfLogsReaders);
+  const svgGraph = new MetaPerfBoxPlot(svgWidth, svgHeight, margin, options, metaPerfLogsReaders, minY, maxY, columns);
   svgGraph.drawYAxis();
   svgGraph.drawBoxPlots();
-  svgGraph.labelXAxis();
-  svgGraph.labelYAxis();
+  if (mode !== 'minimized') {
+    svgGraph.labelXAxis();
+    svgGraph.labelYAxis();
+  } else {
+    svgGraph.labelXAxisMinimized();
+  }
   svgGraph.drawYGridLines();
   writeSVGFileToDir(outputDir, 'metaPerf', svgGraph.toString());
   console.log(`metaPerf drawn to ${outputDir}metaPerf.svg`);
 }
-function twoOrMoreArguments() {
-  const args = process.argv;
+
+function drawMetaPerfBoxPlotFromConfig(pathToConfigFile, minY, maxY, mode) {
+  const configReader = new ConfigReader(pathToConfigFile);
+  main(configReader.getPathsToMetaPerfFiles(), configReader.getPathForSVG(), minY, maxY, mode);
+}
+
+function twoOrMoreArguments(args) {
   return args.length > 3;
 }
 
-if (typeof require !== 'undefined' && require.main === module) {
-  if (twoOrMoreArguments()) {
-    const args = process.argv;
-    main(args.slice(2, args.length - 1), args[args.length - 1]);
-  } else {
-    const pathToConfigFile = expectConfigFile();
-    drawMetaPerfBoxPlotFromConfig(pathToConfigFile);
-  }
+function processArg(args, prefix) {
+  let elementFound;
+  args.forEach((element, index) => {
+    if (element.startsWith(prefix)) {
+      elementFound = element.substring(prefix.length);
+      args.splice(index, 1);
+    }
+  });
+  return elementFound;
 }
 
+function processMinY(args) {
+  return processArg(args, 'minY=');
+}
 
+function processMaxY(args) {
+  return processArg(args, 'maxY=');
+}
+
+function processMode(args) {
+  return processArg(args, 'mode=');
+}
+
+function processColumns(args) {
+  return processArg(args, 'columns=');
+}
+
+if (typeof require !== 'undefined' && require.main === module) {
+  const args = process.argv;
+  const minY = processMinY(args);
+  const maxY = processMaxY(args);
+  const mode = processMode(args);
+  const columns = processColumns(args);
+  if (twoOrMoreArguments(args)) {
+    main(args.slice(2, args.length - 1), args[args.length - 1], minY, maxY, mode, columns);
+  } else {
+    const pathToConfigFile = expectConfigFile();
+    drawMetaPerfBoxPlotFromConfig(pathToConfigFile, minY, maxY, mode, columns);
+  }
+}

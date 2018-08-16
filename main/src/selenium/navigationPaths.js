@@ -61,4 +61,27 @@ async function path5sec(driverForActions) {
     .pause(standardPause);
 }
 
-export { path5sec, slowerScenario };
+
+async function noZoom(driverForActions) {
+  const actions = getActionWrapper(driverForActions);
+  return actions
+    .pause(100)
+    .drag(standardMoveDuration, -200, 0)
+    .pause(standardPause)
+    .pause(longerPause)
+    .drag(standardMoveDuration, 0, -200)
+    .pause(standardPause)
+    .drag(standardMoveDuration, 200, 0)
+    .pause(standardPause)
+    .drag(standardMoveDuration, 0, 200)
+    .pause(longerPause)
+    .pause(standardPause)
+    .drag(standardMoveDuration, -200, 200)
+    .drag(standardMoveDuration, -200, 200)
+    .pause(longerPause)
+    .drag(longerMoveDuration, 400, -50)
+    .drag(standardMoveDuration, 0, 200)
+    .pause(standardPause);
+}
+
+export { path5sec, slowerScenario, noZoom };

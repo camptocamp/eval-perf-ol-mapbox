@@ -18,7 +18,13 @@ export default async function init(abstractMapImplementation) {
   window.zoomOut = duration => abstractMapImplementation.zoomOut(duration);
   window.getVersion = () => abstractMapImplementation.getVersion();
   const configReader = new ConfigReader(PATH_TO_CONFIG_FILE, config);
-  await abstractMapImplementation.setStyle(configReader.getStyle());
+
   abstractMapImplementation.setZoom(configReader.getZoom());
   abstractMapImplementation.setCenter(configReader.getCenter());
+  await abstractMapImplementation.setStyle(configReader.getStyle(), configReader.getOlTime());
+  abstractMapImplementation.setZoom(configReader.getZoom());
+  abstractMapImplementation.setCenter(configReader.getCenter());
+  //window.setTimeout(() => abstractMapImplementation.setZoom(configReader.getZoom()), 200);
+  //window.setTimeout(() => abstractMapImplementation.setCenter(configReader.getCenter()), 200);
+  window.map = abstractMapImplementation;
 }
