@@ -1,19 +1,34 @@
-import { startEventRecording, stopEventRecording } from './event_recorder';
-
 export default class PerformanceRecording {
   constructor(map, mapDOM) {
     this.map = map;
     this.mapDOM = mapDOM;
     this.perfLogs = {};
     this.recording = false;
+    this.perfLogs.dragEvents = [];
+    this.perfLogs.zoomEvents = [];
+  }
+
+  addDragEvent(duration) {
+    if (this.recording) {
+      const start = performance.now();
+      this.perfLogs.dragEvents.push({ start, end: start + duration });
+    }
+  }
+
+  addZoomEvent(duration) {
+    if (this.recording) {
+      const start = performance.now();
+      this.perfLogs.zoomEvents.push({ start, end: start + duration });
+    }
   }
 
   startPerformanceRecording() {
     if (!this.recording) {
       this.perfLogs = {};
       this.recording = true;
+      this.perfLogs.dragEvents = [];
+      this.perfLogs.zoomEvents = [];
       this.startFPSCount();
-      startEventRecording(this.mapDOM);
     } else {
       console.error('console already launched');
     }
@@ -22,7 +37,6 @@ export default class PerformanceRecording {
   stopPerformanceRecording() {
     if (this.recording) {
       this.recording = false;
-      this.perfLogs.eventLogs = stopEventRecording();
       return this.perfLogs;
     }
     console.error('no recording launched');

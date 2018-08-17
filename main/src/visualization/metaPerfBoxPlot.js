@@ -40,15 +40,24 @@ function getLegend(metaPerfLogsReader) {
 }
 
 class MetaPerfBoxPlot {
-  constructor(svgWidth, svgHeight, margin, options, metaPerfLogsReaders, minY, maxY, columns) {
+  constructor(svgWidth, svgHeight, margin, options, metaPerfLogsReaders, optionsParams) {
     this.svgWidth = svgWidth;
     this.svgHeight = svgHeight;
     this.margin = margin;
     this.options = options;
     this.metaPerfLogsReaders = metaPerfLogsReaders;
-    this.minY = parseInt(minY, 10);
-    this.maxY = parseInt(maxY, 10);
-    this.columns = parseInt(columns, 10);
+    this.minY = parseInt(optionsParams.minY, 10);
+    this.maxY = parseInt(optionsParams.maxY, 10);
+    this.columns = parseInt(optionsParams.columns, 10);
+    if (optionsParams.yAxis === 'maxRenderTime') {
+      this.boxPlotsLogs = metaPerfLogsReaders
+        .map(metaPerfLogsReader => metaPerfLogsReader.getMaxRenderBoxPlotLogs());
+      this.YAxisText = 'Maximum time spent rendering in a frame (in ms)';
+    } else {
+      this.boxPlotsLogs = metaPerfLogsReaders
+        .map(metaPerfLogsReader => metaPerfLogsReader.getMeanFPSBoxPlotLogs());
+      this.YAxisText = 'average FPS in an experiment';
+    }
     this.init();
   }
   getMinYValue() {
@@ -56,8 +65,8 @@ class MetaPerfBoxPlot {
       return this.minY;
     }
     let min = Infinity;
-    this.metaPerfLogsReaders.forEach((metaPerfLogsReader) => {
-      const value = metaPerfLogsReader.getMeanFPSBoxPlotLogs().getMinimum();
+    this.boxPlotsLogs.forEach((boxPlotLogs) => {
+      const value = boxPlotLogs.getMinimum();
       if (value < min) {
         min = value;
       }
@@ -69,8 +78,8 @@ class MetaPerfBoxPlot {
       return this.maxY;
     }
     let max = -Infinity;
-    this.metaPerfLogsReaders.forEach((metaPerfLogsReader) => {
-      const value = metaPerfLogsReader.getMeanFPSBoxPlotLogs().getMaximum();
+    this.boxPlotsLogs.forEach((boxPlotLogs) => {
+      const value = boxPlotLogs.getMaximum();
       if (value > max) {
         max = value;
       }
@@ -133,16 +142,16 @@ class MetaPerfBoxPlot {
       .call(d3.axisLeft(this.yScale));
   }
   drawBoxPlots() {
-    this.metaPerfLogsReaders.forEach((element, index) => {
+    this.boxPlotsLogs.forEach((element, index) => {
       this.drawBoxPlot(this.xScale(this.nbEmptyColumns + index), element);
     });
   }
-  drawBoxPlot(offset, metaPerfLogsReader) {
+  drawBoxPlot(offset, boxPlotLogs) {
     const svgContainer = this.svgWithMargin.append('g')
       .attr('transform', `translate(${offset}, 0)`);
     const boxPlot = new BoxPlot(
       svgContainer, this.BOX_PLOT_WIDTH,
-      this.yScale, metaPerfLogsReader.getMeanFPSBoxPlotLogs(),
+      this.yScale, boxPlotLogs,
     );
     return boxPlot.draw();
   }
@@ -153,7 +162,7 @@ class MetaPerfBoxPlot {
       .attr('transform', (d, i) => `translate(${this.xScale(i) + this.margin.left} ,${
         this.height + this.margin.top + 20})`);
     // Hardcoded because I can't figure how to do it properly with d3
-    for (let index = 0; index < 3; index++) {
+    for (let index = 0; index < 3; index += 1) {
       legends.append('text')
         .attr('class', 'legend')
         .text(d => getLegend(d)[index])
@@ -182,7 +191,7 @@ class MetaPerfBoxPlot {
       .attr('x', 0 - (this.height / 2))
       .attr('dy', '1em')
       .style('text-anchor', 'middle')
-      .text('average FPS in an experiment');
+      .text(this.YAxisText);
   }
   drawYGridLines() {
     this.svgWithMargin.append('g')
@@ -196,11 +205,12 @@ class MetaPerfBoxPlot {
   }
 }
 
-function main(pathToMetaPerfFiles, pathToOutDir, minY, maxY, mode, columns) {
+function main(pathToMetaPerfFiles, pathToOutDir, optionsParams) {
   console.log('drawing metaPerf ...');
   const outputDir = pathToOutDir;
   const metaPerfLogsReaders = pathToMetaPerfFiles
     .map(path => new MetaPerfLogsReader(path));
+  const { mode } = optionsParams;
   const styles = `
 .boxoutline line {
   stroke: #000;
@@ -225,8 +235,8 @@ function main(pathToMetaPerfFiles, pathToOutDir, minY, maxY, mode, columns) {
     left: 60,
   };
   if (mode === 'minimized') {
-    margin.top = 20;
-    margin.left = 30;
+    margin.top = 23;
+    margin.left = 65;
     margin.right = 0;
     margin.bottom = 20;
   }
@@ -236,7 +246,7 @@ function main(pathToMetaPerfFiles, pathToOutDir, minY, maxY, mode, columns) {
     svgStyles: styles,
     d3Module: d3,
   };
-  const svgGraph = new MetaPerfBoxPlot(svgWidth, svgHeight, margin, options, metaPerfLogsReaders, minY, maxY, columns);
+  const svgGraph = new MetaPerfBoxPlot(svgWidth, svgHeight, margin, options, metaPerfLogsReaders, optionsParams);
   svgGraph.drawYAxis();
   svgGraph.drawBoxPlots();
   if (mode !== 'minimized') {
@@ -250,9 +260,9 @@ function main(pathToMetaPerfFiles, pathToOutDir, minY, maxY, mode, columns) {
   console.log(`metaPerf drawn to ${outputDir}metaPerf.svg`);
 }
 
-function drawMetaPerfBoxPlotFromConfig(pathToConfigFile, minY, maxY, mode) {
+function drawMetaPerfBoxPlotFromConfig(pathToConfigFile, options) {
   const configReader = new ConfigReader(pathToConfigFile);
-  main(configReader.getPathsToMetaPerfFiles(), configReader.getPathForSVG(), minY, maxY, mode);
+  main(configReader.getPathsToMetaPerfFiles(), configReader.getPathForSVG(), options);
 }
 
 function twoOrMoreArguments(args) {
@@ -286,16 +296,24 @@ function processColumns(args) {
   return processArg(args, 'columns=');
 }
 
+function processYAxis(args) {
+  return processArg(args, 'yAxis=');
+}
+
 if (typeof require !== 'undefined' && require.main === module) {
   const args = process.argv;
   const minY = processMinY(args);
   const maxY = processMaxY(args);
   const mode = processMode(args);
   const columns = processColumns(args);
+  const yAxis = processYAxis(args);
+  const options = {
+    minY, maxY, mode, columns, yAxis,
+  };
   if (twoOrMoreArguments(args)) {
-    main(args.slice(2, args.length - 1), args[args.length - 1], minY, maxY, mode, columns);
+    main(args.slice(2, args.length - 1), args[args.length - 1], options);
   } else {
     const pathToConfigFile = expectConfigFile();
-    drawMetaPerfBoxPlotFromConfig(pathToConfigFile, minY, maxY, mode, columns);
+    drawMetaPerfBoxPlotFromConfig(pathToConfigFile, options);
   }
 }

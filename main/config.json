@@ -4,7 +4,7 @@
   "pathToOutDirSVG": "./out/svg/",
   "renderers": ["openlayers"],
   "nbTrials": 50,
-  "testName": "RealTestMedium5secSeptember2017",
+  "testName": "DefaultTest",
   "initialZoom": 9,
   "initialCenter": [6, 46],
   "paths": ["path5sec"],

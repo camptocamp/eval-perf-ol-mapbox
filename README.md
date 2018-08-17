@@ -14,33 +14,32 @@ A study on Online First Person Shooter showed that ping and jitter (variance of 
 Papers based on those conclusion are listed in bibliography.bib.
 Type their titles on google scholar should provide you the pdf or at least the doi for [scihub](http://www.sci-hub.tw)
 
-### Metrics we can use
+### Metrics used
 We have to determine what matters most for a web map application since I did not see specific tests on the litterature.
-I think fluidity and reactivity are the most important. The main issues could be:
+Fluidity and reactivity are the most important. The main issues could be:
 - lag while dragging -> low FPS in average
-- initial lag when issuing a command (zooming or changing the style) -> variance in FPS ? 
-
-We put aside network issues -> knowing that it can have a great impact on QoE but there would be no difference for ol and mapbox.
+- initial lag when issuing a command (zooming or changing the style) -> render time of slowest frame
 
 To summarize:
 - 1. FPS/render time
-- 2. variance in 1.
-- 3. Other ?
+- 2. render time of slowest frame
 
 ### format of the results
 
 The results are put in a JSON file whose structure is the following:
-* **eventlogs**
-  * *doubleClickTimes* : a list of timestamps corresponding to double click events
-  * *dragEvents* : list of *timeStampsOfMoves* object
-    * *timeStampsOfMoves* : list of timestamps, indicating that a drag occured (empty lists means no drag)
-  * *frameTimes* : list of timeStamps, corresponding to the beginning of a frame
-  * *instantFPS* : list of fps calculated on one frame (same size as frameTimes, = 1000 / timeBetweenFrames)
-  * *timeBetweenFrames* : list of the same size than *frameTimes* is equal to (*frameTimes*[i] - *frameTimes*[i-1])
-  * **renderTimes** : list of objects created each time the renderer works
+* **zoomEvents**: list of zoom events
+  * *start*: a zoom animation has started 
+  * *end*: the zoom animation has ended
+* **dragEvents** : list of drag events
+  * *start*: a drag has started
+  * *end*: the drag has ended
+* *frameTimes* : list of timeStamps, corresponding to the beginning of a frame
+* *instantFPS* : list of fps calculated on one frame (same size as frameTimes, = 1000 / timeBetweenFrames)
+* *timeBetweenFrames* : list of the same size than *frameTimes* is equal to (*frameTimes*[i] - *frameTimes*[i-1])
+* **renderTimes** : list of objects created each time the renderer works
     * *afterRender* : timestamp before rendering
     * *beforeRender* : timestamp at the end of rendering
-  * *version* : version of renderer
+* *version* : version of renderer
 
 All timestamps are captured with [performance.now()](https://developer.mozilla.org/en-US/docs/Web/API/Performance/now) and has 20 microseconds precision (on firefox, it is slightly different on chrome).
 
@@ -94,6 +93,8 @@ The first line will launch selenium and gather metrics. The second line will com
   * minY=... : specify the min Y value (30 is a good value)
   * maxY=... : specify tha max Y value (60 is good)
   * mode=minimized : removes margin and legends
+  * yAxis=maxRenderTime : uses the render time of the slowest frame on y Axis
+  * columns=... : specify the number of columns (insert a number of empty columns in the graph if there is less metaperf files specified)
 * type : ```npm run drawPerfPlots PATH_TO_CONFIG_FILE```
 
 ## Technical
